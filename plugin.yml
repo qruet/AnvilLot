@@ -1,0 +1,23 @@
+name: MaxRepairCost
+version: B.0.11-BETA
+main: me.geekles.repaircost.MaxRepairCost
+author: geekles
+description: Adjusts the maximum vanilla survival repair cost for anvils
+api-version: 1.13
+prefix: MaxRepairCost
+
+commands:
+  maxrepaircost:
+    description: Main alias command
+    aliases: [mrc, maxrepcost, mxrpcst]
+    permission: maxrepaircost.use
+
+permissions:
+  maxrepaircost.use:
+    description: Allows for use of reload and alias commands
+    default: op
+  maxrepaircost.*:
+    description: Wildcard permission
+    default: op
+    children:
+      maxrepaircost.use: true
