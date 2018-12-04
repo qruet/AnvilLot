@@ -2,9 +2,7 @@ package me.geekles.repaircost.listeners;
 
 import me.geekles.repaircost.MaxRepairCost;
 import me.geekles.repaircost.utils.ModeCheckManager;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +14,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.Arrays;
@@ -74,6 +71,8 @@ public class AnvilPreparationListener implements Listener {
 
     }
 
+    private InventoryAction[] blacklisted_actions = {InventoryAction.CLONE_STACK, InventoryAction.HOTBAR_SWAP};
+
     /**
      * Handles everything that is clicked within the anvil. Either forces the player to pay the necessary exp or cancel the ability to retrieve the forged item if they can not afford
      * @param e
@@ -86,7 +85,7 @@ public class AnvilPreparationListener implements Listener {
             if (clicked.getType() == InventoryType.ANVIL) {
                 if (e.getSlot() == 2) {
                     if (EXPPurchaseClick.containsKey(player.getUniqueId())) {
-                        if(e.getAction() == InventoryAction.CLONE_STACK){
+                        if(Arrays.asList(blacklisted_actions).contains(e.getAction())){
                             e.setCancelled(true);
                             return;
                         }
