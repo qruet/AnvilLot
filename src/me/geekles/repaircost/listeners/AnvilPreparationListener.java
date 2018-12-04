@@ -2,12 +2,15 @@ package me.geekles.repaircost.listeners;
 
 import me.geekles.repaircost.MaxRepairCost;
 import me.geekles.repaircost.utils.ModeCheckManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -83,8 +86,13 @@ public class AnvilPreparationListener implements Listener {
             if (clicked.getType() == InventoryType.ANVIL) {
                 if (e.getSlot() == 2) {
                     if (EXPPurchaseClick.containsKey(player.getUniqueId())) {
+                        if(e.getAction() == InventoryAction.CLONE_STACK){
+                            e.setCancelled(true);
+                            return;
+                        }
                         player.setLevel(player.getLevel() - EXPPurchaseClick.get(player.getUniqueId()));
                         EXPPurchaseClick.remove(player.getUniqueId());
+                        ModeCheckManager.removePlayerCheck(player);
                     } else {
                         ItemStack item = e.getCurrentItem();
                         if (isPlaceholder(player, item)) {
