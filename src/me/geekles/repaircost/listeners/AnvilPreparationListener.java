@@ -26,7 +26,7 @@ public class AnvilPreparationListener implements Listener {
     private Map<UUID, Integer> EXPPurchaseClick = new HashMap();
     private MaxRepairCost main = null;
 
-    public AnvilPreparationListener(MaxRepairCost main){
+    public AnvilPreparationListener(MaxRepairCost main) {
         this.main = main;
     }
 
@@ -81,17 +81,22 @@ public class AnvilPreparationListener implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         Inventory clicked = e.getClickedInventory();
-        if(clicked != null) {
+        if (clicked != null) {
             if (clicked.getType() == InventoryType.ANVIL) {
                 if (e.getSlot() == 2) {
                     if (EXPPurchaseClick.containsKey(player.getUniqueId())) {
-                        if(Arrays.asList(blacklisted_actions).contains(e.getAction())){
-                            e.setCancelled(true);
+                        if (Arrays.asList(new InventoryAction[]{InventoryAction.DROP_ONE_SLOT, InventoryAction.DROP_ALL_SLOT}).contains(e.getAction())) {
+                            ModeCheckManager.removePlayerCheck(player);
+                            EXPPurchaseClick.remove(player.getUniqueId());
                             return;
                         }
-                        player.setLevel(player.getLevel() - EXPPurchaseClick.get(player.getUniqueId()));
-                        EXPPurchaseClick.remove(player.getUniqueId());
-                        ModeCheckManager.removePlayerCheck(player);
+                        if (!Arrays.asList(blacklisted_actions).contains(e.getAction())) {
+                            player.setLevel(player.getLevel() - EXPPurchaseClick.get(player.getUniqueId()));
+                            EXPPurchaseClick.remove(player.getUniqueId());
+                            ModeCheckManager.removePlayerCheck(player);
+                        }
+                        e.setCancelled(true);
+                        return;
                     } else {
                         ItemStack item = e.getCurrentItem();
                         if (isPlaceholder(player, item)) {
@@ -101,6 +106,7 @@ public class AnvilPreparationListener implements Listener {
                 }
             }
         }
+
     }
 
     //40 exp is default maximum experience level
@@ -115,8 +121,8 @@ public class AnvilPreparationListener implements Listener {
 
             int max = main.getMaxRepairCost();
 
-            for(PermissionAttachmentInfo pi : player.getEffectivePermissions()){
-                if(pi.getPermission().contains("maxrepaircost.limit.")){
+            for (PermissionAttachmentInfo pi : player.getEffectivePermissions()) {
+                if (pi.getPermission().contains("maxrepaircost.limit.")) {
                     max = Integer.parseInt(pi.getPermission().replace("maxrepaircost.limit.", ""));
                     break;
                 }
