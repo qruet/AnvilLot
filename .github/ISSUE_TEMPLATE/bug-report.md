@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Created a bug report to help remove any pesky bugs in MaxRepairCost
+about: Create a bug report to help remove any pesky bugs in MaxRepairCost
 title: ''
 labels: bug
 assignees: ''
