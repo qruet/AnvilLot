@@ -2,7 +2,9 @@ package me.geekles.repaircost.listeners;
 
 import me.geekles.repaircost.MaxRepairCost;
 import me.geekles.repaircost.utils.ModeCheckManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,7 +74,7 @@ public class AnvilPreparationListener implements Listener {
 
     }
 
-    private InventoryAction[] blacklisted_actions = {InventoryAction.CLONE_STACK, InventoryAction.HOTBAR_SWAP};
+    private InventoryAction[] blacklisted_actions = {InventoryAction.CLONE_STACK};
 
     /**
      * Handles everything that is clicked within the anvil. Either forces the player to pay the necessary exp or cancel the ability to retrieve the forged item if they can not afford
@@ -85,15 +88,14 @@ public class AnvilPreparationListener implements Listener {
             if (clicked.getType() == InventoryType.ANVIL) {
                 if (e.getSlot() == 2) {
                     if (EXPPurchaseClick.containsKey(player.getUniqueId())) {
-                        if (Arrays.asList(new InventoryAction[]{InventoryAction.DROP_ONE_SLOT, InventoryAction.DROP_ALL_SLOT}).contains(e.getAction())) {
-                            ModeCheckManager.removePlayerCheck(player);
+                        if (Arrays.asList(new InventoryAction[]{InventoryAction.DROP_ONE_SLOT, InventoryAction.DROP_ALL_SLOT}).contains(e.getAction())) { //drops item
                             EXPPurchaseClick.remove(player.getUniqueId());
                             return;
                         }
-                        if (!Arrays.asList(blacklisted_actions).contains(e.getAction())) {
+                        if (!Arrays.asList(blacklisted_actions).contains(e.getAction())) { //claims item
                             player.setLevel(player.getLevel() - EXPPurchaseClick.get(player.getUniqueId()));
                             EXPPurchaseClick.remove(player.getUniqueId());
-                            ModeCheckManager.removePlayerCheck(player);
+                            return;
                         }
                         e.setCancelled(true);
                         return;
