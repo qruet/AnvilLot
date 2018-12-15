@@ -1,4 +1,4 @@
-package me.geekles.repaircost.utils;
+package me.geekles.repaircost.utils.text;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

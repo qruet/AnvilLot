@@ -2,15 +2,11 @@ package me.geekles.repaircost;
 
 import me.geekles.repaircost.commands.MainCMD;
 import me.geekles.repaircost.listeners.AnvilPreparationListener;
-import me.geekles.repaircost.utils.ModeCheckManager;
-import me.geekles.repaircost.utils.T;
+import me.geekles.repaircost.checks.ModeCheckManager;
+import me.geekles.repaircost.utils.items.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -19,7 +15,7 @@ import java.util.*;
 
 public final class MaxRepairCost extends JavaPlugin {
 
-    private String[] supported_versions = {"1.11", "1.11.1", "1.11.2", "1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2"}; //Versions that this plugin can support
+    private final String[] supported_versions = {"1.11", "1.11.1", "1.11.2", "1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2"}; //Versions that this plugin can support
 
     private String server_version; //initialized on start
 
@@ -96,6 +92,7 @@ public final class MaxRepairCost extends JavaPlugin {
     }
 
     //setup config and retrieve values from config here
+    @Deprecated
     public void loadConfig() {
         if (!new File(this.getDataFolder(), "config.yml").exists()) {
             this.getLogger().warning("[●▂●] ~(I couldn't find the config so I'm going to create a new one.)");
@@ -116,34 +113,11 @@ public final class MaxRepairCost extends JavaPlugin {
 
         //Setup placeholder item
         try {
-            if (server_version.contains("1.13")) {
-                placeholder = new ItemStack(Material.valueOf(getConfig().getString("Material")), 1);
-            } else {
-                String[] item = getConfig().getString("Material").split(":");
-                placeholder = new ItemStack(Material.valueOf(item[0].toUpperCase()), 1, Byte.valueOf(item[1]).byteValue());
-            }
+            Placeholder.setup(getVersion(), getConfig());
         } catch (Exception e) {
             getLogger().severe("[●▂◉] ~(Oops, something went wrong! Please check to be sure all the values are correctly set in the config...)");
             CriticalShutdownManuevers();
         }
-    }
-
-    public ItemStack getPlaceholder(Player player) {
-        try {
-            ItemStack placeholder = new ItemStack(this.placeholder);
-            ItemMeta meta = placeholder.getItemMeta();
-            meta.setDisplayName(T.C(player, getConfig().getString("ItemMeta.Displayname")));
-            meta.setLore(T.LC(player, getConfig().getStringList("ItemMeta.Lore")));
-            placeholder.setItemMeta(meta);
-            if (getConfig().getBoolean("ItemMeta.Enchanted")) {
-                placeholder.addUnsafeEnchantment(Enchantment.DURABILITY, 0);
-            }
-            return placeholder;
-        } catch (Exception e) {
-            getLogger().severe("[●▂◉] ~(Oops, something went wrong! Please check to be sure all the values are correctly set in the config...)");
-            CriticalShutdownManuevers();
-        }
-        return placeholder;
     }
 
     public int getMaxRepairCost() {

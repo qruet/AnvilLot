@@ -1,7 +1,7 @@
 package me.geekles.repaircost.commands;
 
 import me.geekles.repaircost.MaxRepairCost;
-import me.geekles.repaircost.utils.T;
+import me.geekles.repaircost.utils.text.T;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

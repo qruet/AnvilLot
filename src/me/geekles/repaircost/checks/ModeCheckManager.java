@@ -1,7 +1,6 @@
-package me.geekles.repaircost.utils;
+package me.geekles.repaircost.checks;
 
 import me.geekles.repaircost.MaxRepairCost;
-import me.geekles.repaircost.utils.v1_13.GameModeCheck_R2;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -24,10 +23,10 @@ public abstract class ModeCheckManager {
     private static loop updater = null;
 
     static {
-        VersionHandler.put(me.geekles.repaircost.utils.v1_11.GameModeCheck_R1.class, new String[]{"1.11", "1.11.1", "1.11.2"});
-        VersionHandler.put(me.geekles.repaircost.utils.v1_12.GameModeCheck_R1.class, new String[]{"1.12", "1.12.1", "1.12.2"});
-        VersionHandler.put(me.geekles.repaircost.utils.v1_13.GameModeCheck_R1.class, new String[]{"1.13"});
-        VersionHandler.put(me.geekles.repaircost.utils.v1_13.GameModeCheck_R2.class, new String[]{"1.13.1", "1.13.2"});
+        VersionHandler.put(me.geekles.repaircost.checks.v1_11.GameModeCheck_R1.class, new String[]{"1.11", "1.11.1", "1.11.2"});
+        VersionHandler.put(me.geekles.repaircost.checks.v1_12.GameModeCheck_R1.class, new String[]{"1.12", "1.12.1", "1.12.2"});
+        VersionHandler.put(me.geekles.repaircost.checks.v1_13.GameModeCheck_R1.class, new String[]{"1.13"});
+        VersionHandler.put(me.geekles.repaircost.checks.v1_13.GameModeCheck_R2.class, new String[]{"1.13.1", "1.13.2"});
     }
 
     public static boolean isEmpty() {

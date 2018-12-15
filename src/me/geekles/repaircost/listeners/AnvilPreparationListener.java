@@ -1,13 +1,14 @@
 package me.geekles.repaircost.listeners;
 
 import me.geekles.repaircost.MaxRepairCost;
-import me.geekles.repaircost.utils.ModeCheckManager;
+import me.geekles.repaircost.checks.ModeCheckManager;
+import me.geekles.repaircost.utils.items.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
@@ -17,46 +18,68 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class AnvilPreparationListener implements Listener {
 
-    private Map<UUID, Integer> EXPPurchaseClick = new HashMap();
-    private MaxRepairCost main = null;
+    private static MaxRepairCost main;
 
     public AnvilPreparationListener(MaxRepairCost main) {
         this.main = main;
     }
 
-    /**
-     * @param item Check if item is the placeholder put into the anvil to notify them that they can not afford the item that they want.
-     * @return True or False
-     */
-    protected boolean isPlaceholder(Player player, ItemStack item) {
-        ItemStack placeholder = getPlaceholder(player);
-        if (item == null) {
-            return false;
+    //40 exp is default maximum experience level
+    @EventHandler
+    public void onAnvilPrepare(PrepareAnvilEvent e) {
+        if (!e.getViewers().isEmpty()) { //TODO Figure out why viewers may be empty?
+            Player player = (Player) e.getViewers().get(0);
+            if (player.getGameMode() == GameMode.SURVIVAL) {
+                int cost = e.getInventory().getRepairCost();
+                int max = main.getMaxRepairCost();
+
+                ItemStack first = e.getInventory().getItem(0);
+
+                for (PermissionAttachmentInfo pi : player.getEffectivePermissions()) {
+                    if (pi.getPermission().contains("maxrepaircost.limit.")) {
+                        max = Integer.parseInt(pi.getPermission().replace("maxrepaircost.limit.", ""));
+                        break;
+                    }
+                }
+
+                if (cost > max && max != -1 /*If set to -1 the maximum cost should not be calculated (infinite)*/) {
+                    e.getInventory().setRepairCost(max);
+                    cost = max;
+                }
+
+                if (first != null) {
+                    ModeCheckManager.addPlayerCheck(player); //Begin to check player for when they close the inventory
+                    if (player.getLevel() >= cost) {
+                        new PriceCheckout(player.getUniqueId(), cost); //Tells the plugin that when the player selects their item, they should pay a certain price for doing so.
+                    } else {
+                        e.setResult(Placeholder.getItem(player)); //sets the result
+                        e.getInventory().setItem(2, Placeholder.getItem(player)); //ensures the visual appearance of the placeholder
+                        player.updateInventory();
+                    }
+
+                }
+            }
         }
-        if (item.hasItemMeta()) {
-            return (item.getEnchantments().keySet().containsAll(placeholder.getEnchantments().keySet()) &&
-                    item.getEnchantments().values().containsAll(placeholder.getEnchantments().values())) &&
-                    item.getType() == placeholder.getType();
-        }
-        return false;
     }
 
-    /**
-     * @return Returns predefined placeholder item that is placed into the anvil to notify the player that they can not afford the item that they are trying to forge.
-     */
-    private ItemStack getPlaceholder(Player player) {
-        return main.getPlaceholder(player);
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e){
+        Player player = (Player) e.getWhoClicked();
+        Inventory clicked = e.getClickedInventory();
+        if (clicked == null) {
+            return;
+        }
+        if (clicked.getType() == InventoryType.ANVIL) {
+            if(Placeholder.equals(player, e.getCurrentItem())){
+                e.setCancelled(true);
+            }
+        }
     }
-
 
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
@@ -74,35 +97,63 @@ public class AnvilPreparationListener implements Listener {
 
     }
 
-    private InventoryAction[] blacklisted_actions = {InventoryAction.CLONE_STACK};
+    private static class PriceCheckout implements Listener {
 
-    /**
-     * Handles everything that is clicked within the anvil. Either forces the player to pay the necessary exp or cancel the ability to retrieve the forged item if they can not afford
-     * @param e
-     */
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        Player player = (Player) e.getWhoClicked();
-        Inventory clicked = e.getClickedInventory();
-        if (clicked != null) {
+        private UUID id;
+        private int cost;
+
+        private static Map<UUID, PriceCheckout> priceCheckouts = new HashMap<>();
+
+        public PriceCheckout(UUID id, int cost) {
+            this.id = id;
+            this.cost = cost;
+            register(this);
+        }
+
+        private final List<InventoryAction> BLACKLISTED_ACTIONS = Arrays.asList(new InventoryAction[]{InventoryAction.CLONE_STACK});
+
+        public static void register(PriceCheckout pc){
+            if(priceCheckouts.containsKey(pc.id)){
+                priceCheckouts.get(pc.id).cancel();
+            }
+            priceCheckouts.put(pc.id, pc);
+            Bukkit.getPluginManager().registerEvents(pc, AnvilPreparationListener.main);
+        }
+
+        public static void cancel(UUID id) {
+            if (priceCheckouts.containsKey(id)) {
+                priceCheckouts.get(id).cancel();
+            }
+        }
+
+        private void cancel() {
+            HandlerList.unregisterAll(this);
+            priceCheckouts.remove(id);
+        }
+
+        public void purchaseItem() {
+            Player player = Bukkit.getPlayer(id);
+            if(player.getLevel() >= cost){
+                player.setLevel(player.getLevel() - cost);
+            }
+            cancel();
+        }
+
+        @EventHandler
+        public void onInventoryClick(InventoryClickEvent e) {
+            Player player = (Player) e.getWhoClicked();
+            Inventory clicked = e.getClickedInventory();
+            if (clicked == null) {
+                return;
+            }
             if (clicked.getType() == InventoryType.ANVIL) {
-                if (e.getSlot() == 2) {
-                    if (EXPPurchaseClick.containsKey(player.getUniqueId())) {
-                        if (Arrays.asList(new InventoryAction[]{InventoryAction.DROP_ONE_SLOT, InventoryAction.DROP_ALL_SLOT}).contains(e.getAction())) { //drops item
-                            EXPPurchaseClick.remove(player.getUniqueId());
-                            return;
-                        }
-                        if (!Arrays.asList(blacklisted_actions).contains(e.getAction())) { //claims item
-                            player.setLevel(player.getLevel() - EXPPurchaseClick.get(player.getUniqueId()));
-                            EXPPurchaseClick.remove(player.getUniqueId());
-                            return;
-                        }
-                        e.setCancelled(true);
-                        return;
-                    } else {
-                        ItemStack item = e.getCurrentItem();
-                        if (isPlaceholder(player, item)) {
+                if (player.getUniqueId().equals(id)) {
+                    if (e.getSlot() == 2 /*The result slot*/) {
+                        if (BLACKLISTED_ACTIONS.contains(e.getAction()) || Placeholder.equals(player, e.getCurrentItem())) {
                             e.setCancelled(true);
+                        }
+                        else {
+                            purchaseItem();
                         }
                     }
                 }
@@ -111,43 +162,4 @@ public class AnvilPreparationListener implements Listener {
 
     }
 
-    //40 exp is default maximum experience level
-    @EventHandler
-    public void onAnvilPrepare(PrepareAnvilEvent e) {
-        Player player = (Player) e.getViewers().get(0);
-        if (player.getGameMode() == GameMode.SURVIVAL) {
-            int cost = e.getInventory().getRepairCost();
-
-            ItemStack first = e.getInventory().getItem(0);
-            ItemStack second = e.getInventory().getItem(1);
-
-            int max = main.getMaxRepairCost();
-
-            for (PermissionAttachmentInfo pi : player.getEffectivePermissions()) {
-                if (pi.getPermission().contains("maxrepaircost.limit.")) {
-                    max = Integer.parseInt(pi.getPermission().replace("maxrepaircost.limit.", ""));
-                    break;
-                }
-            }
-
-            if (cost > max && max != -1) {
-                e.getInventory().setRepairCost(max);
-                cost = max;
-            }
-
-            if (first != null) {
-
-                ModeCheckManager check = ModeCheckManager.addPlayerCheck(player);
-                if (player.getLevel() >= cost) {
-                    EXPPurchaseClick.put(player.getUniqueId(), cost);
-                } else {
-                    EXPPurchaseClick.remove(player.getUniqueId());
-                    e.setResult(getPlaceholder(player)); //sets the result
-                    e.getInventory().setItem(2, getPlaceholder(player)); //ensures the visual appearance of the placeholder
-                    player.updateInventory();
-                }
-
-            }
-        }
-    }
 }

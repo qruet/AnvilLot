@@ -1,6 +1,6 @@
-package me.geekles.repaircost.utils.v1_13;
+package me.geekles.repaircost.checks.v1_13;
 
-import me.geekles.repaircost.utils.ModeCheckManager;
+import me.geekles.repaircost.checks.ModeCheckManager;
 import net.minecraft.server.v1_13_R2.EntityHuman;
 import net.minecraft.server.v1_13_R2.PacketPlayOutGameStateChange;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftHumanEntity;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
 /**
- * Checks to see when player no longer has the anvil inventory open.
+ * checks to see when player no longer has the anvil inventory open.
  */
 public class GameModeCheck_R2 extends ModeCheckManager {
 

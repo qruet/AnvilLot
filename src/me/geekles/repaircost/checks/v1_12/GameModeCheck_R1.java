@@ -1,10 +1,10 @@
-package me.geekles.repaircost.utils.v1_13;
+package me.geekles.repaircost.checks.v1_12;
 
-import me.geekles.repaircost.utils.ModeCheckManager;
-import net.minecraft.server.v1_13_R1.EntityHuman;
-import net.minecraft.server.v1_13_R1.PacketPlayOutGameStateChange;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
+import me.geekles.repaircost.checks.ModeCheckManager;
+import net.minecraft.server.v1_12_R1.EntityHuman;
+import net.minecraft.server.v1_12_R1.PacketPlayOutGameStateChange;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
