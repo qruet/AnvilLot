@@ -1,0 +1,26 @@
+name: ${project.name}
+version: ${project.version}
+main: ${project.groupId}.${project.name}
+author: geekles
+description: ${description}
+api-version: 1.13
+prefix: ${project.name}
+
+commands:
+  maxrepaircost:
+    description: Main alias command
+    aliases: [mrc, maxrepcost, mxrpcst]
+    permission: maxrepaircost.help
+
+permissions:
+  maxrepaircost.help:
+    description: Allows for those who have this permission to retrieve information portaining to this plugin
+    default: op
+  maxrepaircost.admin.reload:
+    description: Allows for those who have this permission to reload the plugin
+    default: op
+  maxrepaircost.*:
+    description: Wildcard permission
+    default: op
+    children:
+      maxrepaircost.use: true

@@ -12,9 +12,10 @@ Default Max Repair Cost: -1
 # ====================================================================================================================
 # Placeholder item
 # Placed in anvil inventory when player can not forge item due to not having enough exp
-Material: ''
-ItemMeta:
-  Displayname: '&cToo Expensive'
-  Lore:
-  - '&7&o%player%, you have only &2&o%exp%&7&oxp'
-  Enchanted: false
+Placeholder:
+  Material: 'GRAY_STAINED_GLASS_PANE'
+  ItemMeta:
+    Displayname: '&cToo Expensive'
+    Lore:
+    - '&7&o%player, you have only &2&o%exp&7&oxp'
+    Enchanted: false
