@@ -16,6 +16,8 @@ import java.util.*;
  */
 public class ModeCheckManager {
 
+    private static JavaPlugin pl;
+
     protected static List<ModeChecker> RegisteredModeChecks = new ArrayList();
     private static CheckRunnable updater;
 
@@ -26,6 +28,7 @@ public class ModeCheckManager {
     private static final Class<?> Packet = ReflectionUtils.getNMSClass("Packet");
 
     public static void init(JavaPlugin pl) {
+        ModeCheckManager.pl = pl;
         updater = new CheckRunnable();
         updater.runTaskTimerAsynchronously(pl, 0L, 1L);
     }
@@ -34,7 +37,7 @@ public class ModeCheckManager {
         ModeChecker checker = getPlayerModeCheck(player.getUniqueId());
         if(checker != null)
             return checker;
-        ModeCheck check = new ModeCheck(player);
+        ModeCheck check = new ModeCheck(pl, player);
         RegisteredModeChecks.add(check);
         return check;
     }
@@ -87,9 +90,8 @@ public class ModeCheckManager {
     }
 
     public static void cleanup() {
-        for (ModeChecker check : RegisteredModeChecks) {
+        for (ModeChecker check : RegisteredModeChecks)
             check.terminate();
-        }
         RegisteredModeChecks = null;
         if(updater != null)
             updater.cancel();

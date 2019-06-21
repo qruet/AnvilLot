@@ -46,7 +46,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Geekles\Desktop</outputDirectory>
+                    <outputDirectory>C:\Users\Alexander\Desktop</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -64,7 +64,7 @@
                 <configuration>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                            <resource>C:\Users\Geekles\Desktop\MaxRepairCost</resource>
+                            <resource>C:\Users\Alexander\Desktop\MaxRepairCost</resource>
                         </transformer>
                     </transformers>
                 </configuration>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.14.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
