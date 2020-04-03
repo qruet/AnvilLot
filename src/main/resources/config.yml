@@ -1,21 +1,38 @@
-# =======================================|  M A X  R E P A I R  C O S T  |==========================================
+# =============================================|  A N V I L  L O T  |================================================
 #        Got an issue to report? Message me on either the discussion page, privately, or submit an issue report on
 #        the github page!
 #        Please leave a review on the spigot page, it truly helps a lot!
-#        Solution developed by geekles
+#        Solution developed by qruet (geekles)
 # ===================================================================================================================
 # ===================================================================================================================
 # The cost of xp levels for repairing a item
 # Note this is not the total xp level for repairing both items in the anvil. (Lower Max Repair Cost drops the total)
-# Note you can modify the max repair cost for each player with the permission maxrepaircost.limit.#
+# Note you can modify the max repair cost for each player with the permission anvillot.limit.#
 Default Max Repair Cost: -1
 # ====================================================================================================================
-# Placeholder item
-# Placed in anvil inventory when player can not forge item due to not having enough exp
-Placeholder:
-  Material: 'GRAY_STAINED_GLASS_PANE'
-  ItemMeta:
-    Displayname: '&cToo Expensive'
-    Lore:
-    - '&7&o%player, you have only &2&o%exp&7&oxp'
-    Enchanted: false
+# ====================================================================================================================
+# This section is dedicated towards configuring the boss bar messages that popup throughout the repair process
+Experience Bar:
+  Enabled: true
+  Title: "&a%level" # Title displayed on top of the boss bar
+  Bar Color: "GREEN" # Possible Colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW
+  Bar Style: "SEGMENTED_12" # Possible Styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+  Fog: false
+  Dark Sky: false
+
+Too Expensive Bar:
+  Enabled: true
+  Title: "&cExperience Cost %cost"
+  Bar Color: "RED"
+  Bar Style: "SOLID"
+  Fog: true # display background fog when warning pops up?
+  Dark Sky: true # makes the atmosphere spookier
+# =====================================================================================================================
+# =====================================================================================================================
+Too Expensive Sound Effect:
+  Enabled: true
+  # list of 1.15 bukkit compatible sound effects can be found here:
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+  Sound: "BLOCK_ANVIL_LAND"
+  Volume: 0.1
+  Pitch: 1.4

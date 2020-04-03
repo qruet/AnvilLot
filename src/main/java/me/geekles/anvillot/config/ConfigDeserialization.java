@@ -1,6 +1,5 @@
-package me.geekles.repaircost.utils.config;
+package me.geekles.anvillot.config;
 
-import me.geekles.repaircost.utils.config.items.PlaceholderItemPreset;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -12,7 +11,6 @@ public class ConfigDeserialization {
             pl.saveDefaultConfig(); // Retrieves and creates config.yml stored in plugin
         ConfigSerialization.init(pl);
         GeneralPresets.init(pl.getConfig());
-        PlaceholderItemPreset.init(pl.getConfig());
         return true;
     }
 

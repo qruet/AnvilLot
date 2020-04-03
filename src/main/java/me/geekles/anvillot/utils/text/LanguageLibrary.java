@@ -1,9 +1,9 @@
-package me.geekles.repaircost.utils.text;
+package me.geekles.anvillot.utils.text;
 
 public enum LanguageLibrary {
 
     PREFIX("&e〶&r "),
-    START_HEADER("╼&m-----------&r MaxRepairCost %pv &m-----------╾"),
+    START_HEADER("&8&m-----------&r AnvilLot %pv &8&m-----------╾"),
     CHECK_VERSION("Checking Server Version..."),
     HOOK_VERSION("Hooking into version %sv"),
     UNSUPPORTED_VERSION("Your server version, %sv, is not supported by this plugin!"),
@@ -11,7 +11,7 @@ public enum LanguageLibrary {
     CONFIG_ERROR("An error just occurred while loading the config. Consider deleting the config and letting a new one generate."),
     LOADING_CONFIG("Deserializing config data..."),
     INITIALIZATION("Instantiating a few things..."),
-    THANKYOU("Thank you for installing MaxRepairCost! If you're experiencing any issues please report it (see config for details)"),
+    THANKYOU("Thank you for installing AnvilLot! If you're experiencing any issues please report it (see config for details)"),
     SUCCESS_FINAL("╼&m-----------&r Successfully Loaded &m-----------╾"),
     SHUTDOWN("Disabling..."),
     COMMAND_RELOAD("&2&l| " + PREFIX + "&aSuccessfully reloaded configuration!"),

@@ -1,13 +1,13 @@
-package me.geekles.repaircost.utils;
+package me.geekles.anvillot.utils;
 
 
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A reflection class used to manage all things NMS related to avoid being version dependent
@@ -146,6 +146,7 @@ public class ReflectionUtils {
         try {
             Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
+            disableFinal(field);
             return field;
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,6 +155,17 @@ public class ReflectionUtils {
     }
 
     /**
+     * Access/Update final fields
+     * @param field
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     */
+    public static void disableFinal(Field field) throws NoSuchFieldException, IllegalAccessException {
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    }
+    /**
      * Retrieve method instance
      * @param clazz Name of class where method exists
      * @param name Name of method
@@ -161,7 +173,7 @@ public class ReflectionUtils {
      * @return Method instance
      */
     public static Method getMethod(Class<?> clazz, String name, Class<?>... args) {
-        for (Method m : clazz.getMethods())
+        for (Method m : clazz.getDeclaredMethods())
             if (m.getName().equals(name)
                     && (args.length == 0 || ClassListEqual(args,
                     m.getParameterTypes()))) {

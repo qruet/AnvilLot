@@ -1,12 +1,4 @@
-package me.geekles.repaircost.utils;
-
-import me.geekles.repaircost.MaxRepairCost;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+package me.geekles.anvillot.utils;
 
 public enum RepairType {
     //TODO Add ability to control cost increments for each item in anvil

@@ -1,19 +1,15 @@
-package me.geekles.repaircost.utils.text;
+package me.geekles.anvillot.utils.text;
 
-import me.geekles.repaircost.MaxRepairCost;
-import me.geekles.repaircost.utils.ReflectionUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import me.geekles.anvillot.AnvilLot;
+import me.geekles.anvillot.utils.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public enum P {
-    PV("%pv", MaxRepairCost.PLUGIN_VERSION),
+    PV("%pv", AnvilLot.PLUGIN_VERSION),
     SV("%sv", ReflectionUtils.getVersion()),
     PLAYER("%player", ReflectionUtils.getCraftBukkitClass("entity.CraftHumanEntity"), "getName", true),
     EXP("%exp", ReflectionUtils.getCraftBukkitClass("entity.CraftPlayer"), "getLevel", true);

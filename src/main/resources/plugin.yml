@@ -1,26 +1,26 @@
 name: ${project.name}
 version: ${project.version}
 main: ${project.groupId}.${project.name}
-author: geekles
+author: qruet
 description: ${description}
 api-version: 1.13
 prefix: ${project.name}
 
 commands:
-  maxrepaircost:
+  anvillot:
     description: Main alias command
-    aliases: [mrc, maxrepcost, mxrpcst]
-    permission: maxrepaircost.help
+    aliases: [alot, al]
+    permission: anvillot.help
 
 permissions:
-  maxrepaircost.help:
+  anvillot.help:
     description: Allows for those who have this permission to retrieve information portaining to this plugin
     default: op
-  maxrepaircost.admin.reload:
+  anvillot.admin.reload:
     description: Allows for those who have this permission to reload the plugin
     default: op
-  maxrepaircost.*:
+  anvillot.*:
     description: Wildcard permission
     default: op
     children:
-      maxrepaircost.use: true
+      anvillot.use: true

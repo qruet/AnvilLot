@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.geekles.repaircost</groupId>
-    <artifactId>MaxRepairCost</artifactId>
-    <version>2.${buildNumber}</version>
+    <groupId>me.geekles.anvillot</groupId>
+    <artifactId>AnvilLot</artifactId>
+    <version>3.1.${buildNumber}-Beta-SNAPSHOT</version>
 
-    <name>MaxRepairCost</name>
-    <description>Remove the limitations posed by default vanilla and maximize the anvil repair cost to a configurable amount!</description>
+    <name>AnvilLot</name>
+    <description>Remove the limitations posed by default vanilla anvils and maximize their repair costs to a configurable amount!
+    </description>
 
     <scm>
         <connection>scm:svn:http://127.0.0.1/dummy</connection>
@@ -46,27 +47,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Alexander\Desktop</outputDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                            <resource>C:\Users\Alexander\Desktop\MaxRepairCost</resource>
-                        </transformer>
-                    </transformers>
+                    <outputDirectory>C:\Users\Geekles\Desktop</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -92,6 +73,36 @@
                     <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
                 </configuration>
             </plugin>
+            <!-- Obfuscator Plugin
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <proguardVersion>6.2.2</proguardVersion>
+                    <obfuscate>true</obfuscate>
+                    <options>
+                        <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
+                        <option>-keepattributes annotation</option>
+                        <option>-dontnote</option>
+                    </options>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <outputDirectory>C:\Users\Geekles\Desktop</outputDirectory>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                    </libs>
+                </configuration>
+            </plugin>
+            -->
         </plugins>
     </build>
 
@@ -99,9 +110,14 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.14.1-R0.1-SNAPSHOT</version>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>
+            <groupId>net.sf.proguard</groupId>
+            <artifactId>proguard-base</artifactId>
+            <version>6.2.2</version>
+        </dependency>-->
     </dependencies>
 
     <repositories>
