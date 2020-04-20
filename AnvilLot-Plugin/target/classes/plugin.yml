@@ -1,0 +1,27 @@
+name: AnvilLot
+version: 3.2_01-ea-b28
+main: dev.qruet.anvillot.AnvilLot
+author: qruet
+description: Remove the limitations posed by default vanilla anvils and maximize their repair costs to a
+        configurable amount!
+api-version: 1.13
+prefix: AnvilLot
+
+commands:
+  anvillot:
+    description: Main alias command
+    aliases: [alot, al]
+    permission: anvillot.help
+
+permissions:
+  anvillot.help:
+    description: Allows for those who have this permission to retrieve information portaining to this plugin
+    default: op
+  anvillot.admin.reload:
+    description: Allows for those who have this permission to reload the plugin
+    default: op
+  anvillot.*:
+    description: Wildcard permission
+    default: op
+    children:
+      anvillot.use: true
