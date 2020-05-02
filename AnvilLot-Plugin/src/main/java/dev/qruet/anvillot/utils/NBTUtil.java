@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 
 /**
  * Manages NBT data of an item
+ *
  * @author Qruet
  */
 public class NBTUtil {

@@ -1,4 +1,5 @@
 dev\qruet\anvillot\nms\VersionHandler.class
+dev\qruet\anvillot\utils\ReflectionUtility.class
 dev\qruet\anvillot\config\ConfigSerialization.class
 dev\qruet\anvillot\utils\Tasky.class
 dev\qruet\anvillot\utils\RepairType.class

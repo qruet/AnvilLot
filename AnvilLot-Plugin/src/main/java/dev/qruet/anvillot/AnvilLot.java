@@ -55,7 +55,7 @@ public final class AnvilLot extends JavaPlugin {
     }
 
     public enum ShutdownReason {
-        NORMAL, CONFIG, UNSUPPORTED_VERSION
+        NORMAL, CONFIG, UNSUPPORTED_VERSION, CRITICAL
     }
 
     /**
@@ -70,6 +70,10 @@ public final class AnvilLot extends JavaPlugin {
                 plugin.getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.SHUTDOWN);
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 break;
+            case CRITICAL:
+                plugin.getLogger().warning(LanguageLibrary.PREFIX + "" + LanguageLibrary.CRITICAL_ERROR);
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                break;
             case CONFIG:
                 plugin.getLogger().severe(LanguageLibrary.PREFIX + "" + LanguageLibrary.CONFIG_ERROR);
                 shutdown(ShutdownReason.NORMAL);
@@ -78,8 +82,13 @@ public final class AnvilLot extends JavaPlugin {
                 plugin.getLogger().severe(LanguageLibrary.PREFIX + "" + LanguageLibrary.UNSUPPORTED_VERSION);
                 shutdown(ShutdownReason.NORMAL);
                 break;
-
         }
+    }
+
+    public static void shutdown(String message) {
+        JavaPlugin plugin = JavaPlugin.getPlugin(AnvilLot.class);
+        plugin.getLogger().warning(message);
+        shutdown(ShutdownReason.CRITICAL);
     }
 
     public void onDisable() {
