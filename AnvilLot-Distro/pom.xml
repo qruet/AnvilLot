@@ -5,7 +5,7 @@
     <parent>
         <artifactId>AnvilLot</artifactId>
         <groupId>dev.qruet.anvillot</groupId>
-        <version>3.2_01-ea</version>
+        <version>3.2_02-ea</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
@@ -50,27 +50,27 @@
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-Plugin</artifactId>
-            <version>3.2_01-ea</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-v1_14_R1</artifactId>
-            <version>3.2_01-ea</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-v1_15_R1</artifactId>
-            <version>3.2_01-ea</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-JDK_14</artifactId>
-            <version>3.2_01-ea</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-JDK_8</artifactId>
-            <version>3.2_01-ea</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 
