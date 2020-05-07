@@ -7,7 +7,7 @@
     <parent>
         <artifactId>AnvilLot</artifactId>
         <groupId>dev.qruet.anvillot</groupId>
-        <version>3.2_02-ea</version>
+        <version>3.2_03-ea</version>
     </parent>
 
     <properties>

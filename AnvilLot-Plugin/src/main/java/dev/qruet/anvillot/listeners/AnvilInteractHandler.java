@@ -12,7 +12,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
-public class AnvilManagementListener implements Listener {
+import java.util.LinkedList;
+
+public class AnvilInteractHandler implements Listener {
+
+    private static final LinkedList<Material> MATERIAL_NODES = new LinkedList<Material>() {{
+        add(Material.ANVIL);
+        add(Material.CHIPPED_ANVIL);
+        add(Material.DAMAGED_ANVIL);
+    }};
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
@@ -24,7 +32,7 @@ public class AnvilManagementListener implements Listener {
             return;
 
         Block block = e.getClickedBlock();
-        if (block.getType() != Material.ANVIL)
+        if (!MATERIAL_NODES.contains(block.getType()))
             return;
 
         e.setCancelled(true);

@@ -18,11 +18,13 @@ public class VersionHandler {
     private static final Class<?> ITileInventory;
     private static final Class<?> ChatMessage;
     private static final Class<?> IChatBaseComponent;
+    private static final Class<?> ITileEntityContainer;
 
     private static Class<?> AnvilLotTileInventory;
 
     private static final Method getHandle;
     private static final Method openContainer;
+    private static final Method openTileEntity;
 
     private static Object container_title;
 
@@ -36,6 +38,7 @@ public class VersionHandler {
         ITileInventory = ReflectionUtils.getNMSClass("ITileInventory");
         ChatMessage = ReflectionUtils.getNMSClass("ChatMessage");
         IChatBaseComponent = ReflectionUtils.getNMSClass("IChatBaseComponent");
+        ITileEntityContainer = ReflectionUtils.getNMSClass("ITileEntityContainer");
 
         try {
             AnvilLotTileInventory = Class.forName(VersionHandler.class.getPackage().getName() + "." + VERSION + ".AnvilLotTileInventory");
@@ -46,6 +49,11 @@ public class VersionHandler {
 
         getHandle = ReflectionUtils.getMethod(CraftPlayer, "getHandle");
         openContainer = ReflectionUtils.getMethod(EntityPlayer, "openContainer", ITileInventory);
+
+        if (VERSION.startsWith("v1_13"))
+            openTileEntity = ReflectionUtils.getMethod(EntityPlayer, "openTileEntity", ITileEntityContainer);
+        else
+            openTileEntity = null;
 
         try {
             container_title = ChatMessage.getConstructor(String.class, Object[].class).newInstance("Repair & Name", new Object[]{});
@@ -59,7 +67,10 @@ public class VersionHandler {
         try {
             Object eplayer = getHandle.invoke(CraftPlayer.cast(player));
             Object tileInventory = AnvilLotTileInventory.getConstructor(IChatBaseComponent).newInstance(container_title);
-            openContainer.invoke(eplayer, tileInventory);
+            if (openTileEntity != null)
+                openTileEntity.invoke(eplayer, tileInventory);
+            else
+                openContainer.invoke(eplayer, tileInventory);
         } catch (IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException ex) {
             ex.printStackTrace();
         }

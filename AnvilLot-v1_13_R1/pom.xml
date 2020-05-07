@@ -9,12 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>AnvilLot-JDK_8</artifactId>
-
+    <artifactId>AnvilLot-v1_13_R1</artifactId>
     <packaging>jar</packaging>
-
     <build>
-        <finalName>AnvilLot</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -29,15 +26,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>dev.qruet.anvillot</groupId>
-            <artifactId>AnvilLot-Plugin</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <groupId>dev.qruet.anvillot</groupId>
+            <artifactId>AnvilLot-Plugin</artifactId>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -48,5 +45,4 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
-
 </project>

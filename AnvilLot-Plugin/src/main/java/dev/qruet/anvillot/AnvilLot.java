@@ -2,7 +2,7 @@ package dev.qruet.anvillot;
 
 import dev.qruet.anvillot.commands.AnvilLotCmd;
 import dev.qruet.anvillot.config.ConfigDeserialization;
-import dev.qruet.anvillot.listeners.AnvilManagementListener;
+import dev.qruet.anvillot.listeners.AnvilInteractHandler;
 import dev.qruet.anvillot.utils.L;
 import dev.qruet.anvillot.utils.ReflectionUtils;
 import dev.qruet.anvillot.utils.Tasky;
@@ -47,7 +47,7 @@ public final class AnvilLot extends JavaPlugin {
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.INITIALIZATION);
 
         AnvilLotCmd.init();
-        L.R(new AnvilManagementListener());
+        L.R(new AnvilInteractHandler());
 
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.SUCCESS);
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.THANKYOU);

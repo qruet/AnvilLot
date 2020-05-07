@@ -28,7 +28,7 @@ public class RepairCostCalculator {
     }
 
     public static int calculateCost(ItemStack item) {
-        if (item == null || item.getType().isAir())
+        if (item == null || item.getType().name().toUpperCase().contains("AIR"))
             return 0;
         try {
             Object nmsItem = asNMSCopy.invoke(null, item);
