@@ -9,26 +9,29 @@ import java.lang.reflect.Method;
 
 public class VersionHandler {
 
-    private static final String VERSION;
+    private static String VERSION;
 
-    private static final Class<?> ContainerAnvil;
-    private static final Class<?> CraftInventoryAnvil;
-    private static final Class<?> EntityPlayer;
-    private static final Class<?> CraftPlayer;
-    private static final Class<?> ITileInventory;
-    private static final Class<?> ChatMessage;
-    private static final Class<?> IChatBaseComponent;
-    private static final Class<?> ITileEntityContainer;
+    private static Class<?> ContainerAnvil;
+    private static Class<?> CraftInventoryAnvil;
+    private static Class<?> EntityPlayer;
+    private static Class<?> CraftPlayer;
+    private static Class<?> ITileInventory;
+    private static Class<?> ChatMessage;
+    private static Class<?> IChatBaseComponent;
+    private static Class<?> ITileEntityContainer;
 
     private static Class<?> AnvilLotTileInventory;
 
-    private static final Method getHandle;
-    private static final Method openContainer;
-    private static final Method openTileEntity;
+    private static Method getHandle;
+    private static Method openContainer;
+    private static Method openTileEntity;
 
     private static Object container_title;
 
-    static {
+    public static boolean init() {
+        if(AnvilLotTileInventory != null)
+            throw new UnsupportedOperationException("VersionHandler has already been initialized.");
+
         VERSION = ReflectionUtils.getVersion();
 
         ContainerAnvil = ReflectionUtils.getNMSClass("ContainerAnvil");
@@ -43,9 +46,10 @@ public class VersionHandler {
         try {
             AnvilLotTileInventory = Class.forName(VersionHandler.class.getPackage().getName() + "." + VERSION + ".AnvilLotTileInventory");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             AnvilLot.shutdown(AnvilLot.ShutdownReason.UNSUPPORTED_VERSION);
+            return false;
         }
+
 
         getHandle = ReflectionUtils.getMethod(CraftPlayer, "getHandle");
         openContainer = ReflectionUtils.getMethod(EntityPlayer, "openContainer", ITileInventory);
@@ -60,10 +64,14 @@ public class VersionHandler {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
             AnvilLot.shutdown(AnvilLot.ShutdownReason.UNSUPPORTED_VERSION);
+            return false;
         }
+        return true;
     }
 
     public static void openContainer(Player player) {
+        if(AnvilLotTileInventory == null)
+            throw new UnsupportedOperationException("VersionHandler has not yet been initialized.");
         try {
             Object eplayer = getHandle.invoke(CraftPlayer.cast(player));
             Object tileInventory = AnvilLotTileInventory.getConstructor(IChatBaseComponent).newInstance(container_title);

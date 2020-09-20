@@ -9,6 +9,15 @@
 # Note this is not the total xp level for repairing both items in the anvil. (Lower Max Repair Cost drops the total)
 # Note you can modify the max repair cost for each player with the permission anvillot.limit.#
 Default Max Repair Cost: -1
+
+# Variables:
+#   rename_fee -> variable responsible for adding rename fee (maximum 1)
+#   first_item -> Repair cost of item in 1st anvil slot
+#   second_item -> Repair cost of item in 2nd anvil slot
+
+Repair Cost Equation: "first_item + second_item + rename_fee"
+
+Repair Progression Equation: "max(first_item,second_item)*1.4"
 # ====================================================================================================================
 # ====================================================================================================================
 # This section is dedicated towards configuring the boss bar messages that popup throughout the repair process

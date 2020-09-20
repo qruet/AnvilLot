@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * A reflection class used to manage all things NMS related to avoid being version dependent
+ * @author qruet
  */
 public class ReflectionUtils implements ReflectionUtility {
 
@@ -19,6 +20,14 @@ public class ReflectionUtils implements ReflectionUtility {
 
     private Class<?> getPrimitiveType(Class<?> clazz) {
         return CORRESPONDING_TYPES.containsKey(clazz) ? CORRESPONDING_TYPES.get(clazz) : clazz;
+    }
+
+    static {
+         if(dev.qruet.anvillot.utils.ReflectionUtils.getJDKVersion() == 11) {
+             //Hide WARNING: An illegal reflective access operation has occurred that occurs in version 11
+             //System.err.close();
+             //System.setErr(System.out);
+         }
     }
 
     @Override

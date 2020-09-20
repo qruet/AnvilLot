@@ -3,8 +3,8 @@ package dev.qruet.anvillot;
 import dev.qruet.anvillot.commands.AnvilLotCmd;
 import dev.qruet.anvillot.config.ConfigDeserialization;
 import dev.qruet.anvillot.listeners.AnvilInteractHandler;
+import dev.qruet.anvillot.nms.VersionHandler;
 import dev.qruet.anvillot.utils.L;
-import dev.qruet.anvillot.utils.ReflectionUtils;
 import dev.qruet.anvillot.utils.Tasky;
 import dev.qruet.anvillot.utils.text.LanguageLibrary;
 import org.bukkit.Bukkit;
@@ -29,10 +29,8 @@ public final class AnvilLot extends JavaPlugin {
         getLogger().warning("You are using a build in early beta, meaning critical bugs may be present." +
                 " Please report any issues that you encounter.");
 
-        if (!checkVersion()) {
-            shutdown(ShutdownReason.UNSUPPORTED_VERSION);
+        if (!VersionHandler.init())
             return;
-        }
 
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.HOOK_VERSION);
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.LOADING_CONFIG);
@@ -94,17 +92,6 @@ public final class AnvilLot extends JavaPlugin {
     public void onDisable() {
         //Make sure to properly unregister any listeners belonging to this plugin
         HandlerList.unregisterAll(this);
-    }
-
-    private boolean checkVersion() {
-        try {
-            Class.forName("org.bukkit.event.inventory.PrepareAnvilEvent");
-            Class<?> AnvilInventory = Class.forName("org.bukkit.inventory.AnvilInventory");
-            Class<?> ContainerAnvil = ReflectionUtils.getNMSClass("ContainerAnvil");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 
     public boolean loadConfig() {

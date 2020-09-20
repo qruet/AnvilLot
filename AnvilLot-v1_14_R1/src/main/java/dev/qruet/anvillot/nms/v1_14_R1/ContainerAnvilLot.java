@@ -231,7 +231,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (!StringUtils.isEmpty(renameText)) {
                 bonus++;
             }
-            updateCost((rPa + rPb) + bonus); //update current repair cost
+            updateCost(Math.max(maxCost, (rPa + rPb) + bonus)); //update current repair cost
 
             if (!result.isEmpty())
                 result.setRepairCost((int) (Math.max(rPa, rPb) * 1.4f)); //increment result item's repair cost

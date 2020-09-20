@@ -60,7 +60,7 @@ public class ReflectionUtils {
         utility.makeNonFinal(field);
     }
 
-    private static int getJDKVersion() {
+    public static int getJDKVersion() {
         String version = System.getProperty("java.version");
         if (version.startsWith("1.")) {
             version = version.substring(2, 3);

@@ -1,7 +1,7 @@
-package dev.qruet.anvillot.nms.v1_13_R1;
+package dev.qruet.anvillot.nms.v1_16_R1;
 
-import dev.qruet.anvillot.bar.v1_13_R1.ExperienceBar;
-import dev.qruet.anvillot.bar.v1_13_R1.TooExpensiveBar;
+import dev.qruet.anvillot.bar.v1_16_R1.ExperienceBar;
+import dev.qruet.anvillot.bar.v1_16_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
@@ -9,12 +9,12 @@ import dev.qruet.anvillot.utils.L;
 import dev.qruet.anvillot.utils.ReflectionUtils;
 import dev.qruet.anvillot.utils.RepairCostCalculator;
 import dev.qruet.anvillot.utils.num.Int;
-import net.minecraft.server.v1_13_R2.*;
-import org.apache.commons.lang.StringUtils;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.boss.BarFlag;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -48,35 +48,25 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     private final PacketPlayOutGameStateChange defaultMode;
 
-    public ContainerAnvilLot(PlayerInventory playerinventory, World world, final BlockPosition position, EntityHuman human) {
-        super(playerinventory, world, position, human);
+    public ContainerAnvilLot(int i, PlayerInventory playerinventory, final ContainerAccess containeraccess) {
+        super(i, playerinventory, containeraccess);
 
         Object rpI = null;
         Object rlI = null;
         try {
-            Field repairInventory = null;
-            try {
-                repairInventory = ContainerAnvil.class.getDeclaredField("repairInventory");
-            } catch (NoSuchFieldException e) {
-                repairInventory = ContainerAnvil.class.getDeclaredField("h");
-            }
+            Field repairInventory = ContainerAnvil.class.getDeclaredField("repairInventory");
             ReflectionUtils.makeNonFinal(repairInventory);
             repairInventory.setAccessible(true);
 
             rpI = repairInventory.get(this);
 
-            Field resultInventory = null;
-            try {
-                resultInventory = ContainerAnvil.class.getDeclaredField("resultInventory");
-            } catch (NoSuchFieldException e) {
-                resultInventory = ContainerAnvil.class.getDeclaredField("g");
-            }
+            Field resultInventory = ContainerAnvil.class.getDeclaredField("resultInventory");
             ReflectionUtils.makeNonFinal(resultInventory);
             resultInventory.setAccessible(true);
 
             rlI = resultInventory.get(this);
 
-            Field h = ContainerAnvil.class.getDeclaredField("k");
+            Field h = ContainerAnvil.class.getDeclaredField("h");
             h.setAccessible(true);
             this.h = (int) h.get(this);
         } catch (IllegalAccessException | NoSuchFieldException e) {
@@ -129,36 +119,36 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                 PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(-1, -1, playerinventory.getCarried());
                 owner.playerConnection.sendPacket(packet);
 
-                repairInventory.setItem(0, ItemStack.a);
+                repairInventory.setItem(0, ItemStack.b);
                 if (h > 0) {
                     ItemStack itemstack1 = repairInventory.getItem(1);
                     if (!itemstack1.isEmpty() && itemstack1.getCount() > h) {
                         itemstack1.subtract(h);
                         repairInventory.setItem(1, itemstack1);
                     } else {
-                        repairInventory.setItem(1, ItemStack.a);
+                        repairInventory.setItem(1, ItemStack.b);
                     }
                 } else {
-                    repairInventory.setItem(1, ItemStack.a);
+                    repairInventory.setItem(1, ItemStack.b);
                 }
 
                 updateCost(0);
-
-                IBlockData iblockdata = world.getType(position);
-                if (!world.isClientSide) {
+                containeraccess.a((world, blockposition) -> {
+                    IBlockData iblockdata = world.getType(blockposition);
                     if (!entityhuman.abilities.canInstantlyBuild && iblockdata.a(TagsBlock.ANVIL) && entityhuman.getRandom().nextFloat() < 0.12F) {
-                        IBlockData iblockdata1 = BlockAnvil.a_(iblockdata);
+                        IBlockData iblockdata1 = BlockAnvil.c(iblockdata);
                         if (iblockdata1 == null) {
-                            world.setAir(position);
-                            world.triggerEffect(1029, position, 0);
+                            world.a(blockposition, false);
+                            world.triggerEffect(1029, blockposition, 0);
                         } else {
-                            world.setTypeAndData(position, iblockdata1, 2);
-                            world.triggerEffect(1030, position, 0);
+                            world.setTypeAndData(blockposition, iblockdata1, 2);
+                            world.triggerEffect(1030, blockposition, 0);
                         }
                     } else {
-                        world.triggerEffect(1030, position, 0);
+                        world.triggerEffect(1030, blockposition, 0);
                     }
-                }
+
+                });
                 return itemstack;
             }
         });
@@ -186,10 +176,10 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         if (maxCost == 0)
             maxCost = GeneralPresets.DEFAULT_MAX_COST;
 
-        defaultMode = new PacketPlayOutGameStateChange(3, 3);
+        defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
         owner.playerConnection.sendPacket(defaultMode);
 
-        this.repairCost = levelCost;
+        this.repairCost = levelCost.get();
     }
 
     @Override
@@ -212,26 +202,26 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (getOwner().getLevel() < repairCost)
                 return super.a(i, j, inventoryclicktype, entityhuman);
         }
-        d();
+        e();
         return super.a(i, j, inventoryclicktype, entityhuman);
     }
 
     @Override
-    public void d() {
-        super.d();
+    public void e() {
+        super.e();
 
         ItemStack first = repairInventory.getItem(0);
         ItemStack second = repairInventory.getItem(1);
         ItemStack result = resultInventory.getItem(0);
 
         if (repairCost >= 40) {
-            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, 1);
+            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 1);
             owner.playerConnection.sendPacket(packet);
         } else {
             owner.playerConnection.sendPacket(defaultMode);
         }
 
-        if (maxCost != -1 && levelCost > maxCost) {
+        if (maxCost != -1 && levelCost.get() > maxCost) {
             updateCost(maxCost);
         } else {
             int rPa = first.getRepairCost();
@@ -241,7 +231,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (!StringUtils.isEmpty(renameText)) {
                 bonus++;
             }
-            updateCost((rPa + rPb) + bonus); //update current repair cost
+            updateCost(Math.max(maxCost, (rPa + rPb) + bonus)); //update current repair cost
 
             if (!result.isEmpty())
                 result.setRepairCost((int) (Math.max(rPa, rPb) * 1.4f)); //increment result item's repair cost
@@ -253,13 +243,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     public void updateCost(int val) {
         repairCost = val;
-        levelCost = val;
+        levelCost.set(val);
         expBar.update();
         if (getOwner().getLevel() < repairCost) {
-            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, 3);
+            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
             owner.playerConnection.sendPacket(packet);
 
-            levelCost = 40;
+            levelCost.set(40);
 
             if (errBar != null) {
                 if (!errBar.isEnabled())
@@ -268,7 +258,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     errBar.update();
             }
 
-            resultInventory.setItem(0, ItemStack.a);
+            resultInventory.setItem(0, ItemStack.b);
 
             if (GeneralPresets.TOO_EXPENSIVE_ALERT_ENABLED) {
                 SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
@@ -295,7 +285,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     }
 
     private void reset() {
-        PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, owner.playerInteractManager.getGameMode().getId());
+        PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d,
+                owner.playerInteractManager.getGameMode().getId());
         owner.playerConnection.sendPacket(packet);
     }
 

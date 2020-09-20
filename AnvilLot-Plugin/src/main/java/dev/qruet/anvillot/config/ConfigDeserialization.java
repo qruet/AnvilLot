@@ -11,6 +11,7 @@ public class ConfigDeserialization {
             pl.saveDefaultConfig(); // Retrieves and creates config.yml stored in plugin
         ConfigSerialization.init(pl);
         GeneralPresets.init(pl.getConfig());
+
         return true;
     }
 
