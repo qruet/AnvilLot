@@ -54,13 +54,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         Object rpI = null;
         Object rlI = null;
         try {
-            Field repairInventory = ContainerAnvil.class.getDeclaredField("repairInventory");
+            Field repairInventory = ContainerAnvilAbstract.class.getDeclaredField("repairInventory");
             ReflectionUtils.makeNonFinal(repairInventory);
             repairInventory.setAccessible(true);
 
             rpI = repairInventory.get(this);
 
-            Field resultInventory = ContainerAnvil.class.getDeclaredField("resultInventory");
+            Field resultInventory = ContainerAnvilAbstract.class.getDeclaredField("resultInventory");
             ReflectionUtils.makeNonFinal(resultInventory);
             resultInventory.setAccessible(true);
 
@@ -231,10 +231,10 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (!StringUtils.isEmpty(renameText)) {
                 bonus++;
             }
-            updateCost(Math.max(maxCost, (rPa + rPb) + bonus)); //update current repair cost
+            updateCost(Math.min(maxCost, (rPa + rPb) + bonus)); //update current repair cost
 
             if (!result.isEmpty())
-                result.setRepairCost((int) (Math.max(rPa, rPb) * 1.4f)); //increment result item's repair cost
+                result.setRepairCost(Math.round((Math.max(rPa, rPb) * 1.4f))); //increment result item's repair cost
         }
 
         PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
