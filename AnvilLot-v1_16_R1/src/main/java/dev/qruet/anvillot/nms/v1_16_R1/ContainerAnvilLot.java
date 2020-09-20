@@ -166,6 +166,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             }
         });
 
+        maxCost = GeneralPresets.DEFAULT_MAX_COST;
+
         getOwner().getEffectivePermissions().stream().forEach(pI -> {
             String permission = pI.getPermission();
             if (!permission.startsWith("anvillot.limit."))
@@ -173,8 +175,9 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             this.maxCost = Int.P(permission.substring(permission.length() - 1));
         });
 
-        if (maxCost == 0)
-            maxCost = GeneralPresets.DEFAULT_MAX_COST;
+        if (maxCost == -1) {
+            maxCost = Integer.MAX_VALUE;
+        }
 
         defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
         owner.playerConnection.sendPacket(defaultMode);
