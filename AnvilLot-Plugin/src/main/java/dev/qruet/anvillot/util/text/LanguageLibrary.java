@@ -1,9 +1,8 @@
-package dev.qruet.anvillot.utils.text;
+package dev.qruet.anvillot.util.text;
 
 public enum LanguageLibrary {
 
     PREFIX("&e〶&r "),
-    START_HEADER("&8&m-----------&r AnvilLot %pv &8&m-----------╾"),
     CHECK_VERSION("Checking Server Version..."),
     HOOK_VERSION("Hooking into version %sv"),
     UNSUPPORTED_VERSION("Your server version, %sv, is not supported by this plugin!"),
@@ -14,9 +13,17 @@ public enum LanguageLibrary {
     THANKYOU("Thank you for installing AnvilLot! If you're experiencing any issues please report it (see config for details)"),
     SUCCESS_FINAL("╼&m-----------&r Successfully Loaded &m-----------╾"),
     SHUTDOWN("Disabling..."),
-    COMMAND_RELOAD("&2&l| " + PREFIX + "&aSuccessfully reloaded configuration!"),
-    COMMAND_INVALID_ENTITY("&4&l| " + PREFIX + "&cYou must be a player to run that command!"),
-    SUCCESS("Success!");
+    SUCCESS("Success!"),
+
+    START_HEADER(T.center(P.R("&8&m-----------&r AnvilLot %pv &8&m-----------╾"))),
+    FOOTER(T.center("&8&m------------------------------------╾")),
+    COMMAND_NO_PERMISSION(" &4&l| " + PREFIX + "&cYou do not have permission to do that."),
+    COMMAND_RELOAD(" &2&l| " + PREFIX + "&aSuccessfully reloaded configuration in %tms!"),
+    COMMAND_INVALID_ENTITY(" &4&l| " + PREFIX + "&cYou must be a player to run that command!"),
+
+    RESOURCE_LINK("https://www.spigotmc.org/resources/anvillot.62905/"),
+    DONATE_LINK("https://www.paypal.com/paypalme/qruet"),
+    DISCORD_LINK("https://discord.com/invite/fx9gm7T");
 
     private final String lang;
     LanguageLibrary(final String lang) {
@@ -25,7 +32,7 @@ public enum LanguageLibrary {
 
     @Override
     public String toString() {
-        return P.R(lang);
+        return lang;
     }
 
 }

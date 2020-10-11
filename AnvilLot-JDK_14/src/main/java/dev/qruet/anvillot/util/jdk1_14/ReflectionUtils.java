@@ -1,9 +1,11 @@
-package dev.qruet.anvillot.utils.jdk1_8;
+package dev.qruet.anvillot.util.jdk1_14;
 
 
-import dev.qruet.anvillot.utils.ReflectionUtility;
+import dev.qruet.anvillot.util.ReflectionUtility;
 import org.bukkit.Bukkit;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -12,7 +14,6 @@ import java.util.Map;
 
 /**
  * A reflection class used to manage all things NMS related to avoid being version dependent
- * @author qruet
  */
 public class ReflectionUtils implements ReflectionUtility {
 
@@ -22,22 +23,22 @@ public class ReflectionUtils implements ReflectionUtility {
         return CORRESPONDING_TYPES.containsKey(clazz) ? CORRESPONDING_TYPES.get(clazz) : clazz;
     }
 
+    private static final VarHandle MODIFIERS;
+
     static {
-         if(dev.qruet.anvillot.utils.ReflectionUtils.getJDKVersion() == 11) {
-             //Hide WARNING: An illegal reflective access operation has occurred that occurs in version 11
-             //System.err.close();
-             //System.setErr(System.out);
-         }
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup());
+            MODIFIERS = lookup.findVarHandle(Field.class, "modifiers", int.class);
+        } catch (IllegalAccessException | NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
     public void makeNonFinal(Field field) {
-        try {
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        } catch(IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+        int mods = field.getModifiers();
+        if (Modifier.isFinal(mods)) {
+            MODIFIERS.set(field, mods & ~Modifier.FINAL);
         }
     }
 
@@ -181,19 +182,6 @@ public class ReflectionUtils implements ReflectionUtility {
     }
 
     /**
-     * Access/Update final fields
-     *
-     * @param field
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
-     */
-    public static void disableFinal(Field field) throws NoSuchFieldException, IllegalAccessException {
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    }
-
-    /**
      * Retrieve method instance
      *
      * @param clazz Name of class where method exists
@@ -212,7 +200,7 @@ public class ReflectionUtils implements ReflectionUtility {
         return null;
     }
 
-    private boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2) {
+    public static boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2) {
         boolean equal = true;
         if (l1.length != l2.length)
             return false;

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>AnvilLot</artifactId>
         <groupId>dev.qruet.anvillot</groupId>
-        <version>3.3_01-ea</version>
+        <version>3.3_02</version>
     </parent>
 
     <properties>
@@ -77,6 +77,11 @@
             <artifactId>spigot</artifactId>
             <version>1.16.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>jep</artifactId>
+            <version>2.4.2</version>
         </dependency>
     </dependencies>
 

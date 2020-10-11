@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils;
+package dev.qruet.anvillot.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +37,8 @@ public class RepairCostCalculator {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                 AtomicInteger mL = new AtomicInteger();
                 meta.getStoredEnchants().forEach((k, v) -> {
-                    mL.set(Math.max(mL.get(), v));
+                    mL.set(Math.max(mL.get(), (4 % k.getMaxLevel() == 0 ?
+                            4 * (int) ((double) v / ((double) k.getMaxLevel())) : v)));
                 });
                 cost += mL.get();
             }

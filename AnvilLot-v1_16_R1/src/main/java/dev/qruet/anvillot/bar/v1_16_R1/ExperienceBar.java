@@ -2,7 +2,7 @@ package dev.qruet.anvillot.bar.v1_16_R1;
 
 import dev.qruet.anvillot.AnvilLot;
 import dev.qruet.anvillot.config.GeneralPresets;
-import dev.qruet.anvillot.utils.text.T;
+import dev.qruet.anvillot.util.text.T;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.craftbukkit.v1_16_R1.boss.CraftBossBar;

@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils;
+package dev.qruet.anvillot.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

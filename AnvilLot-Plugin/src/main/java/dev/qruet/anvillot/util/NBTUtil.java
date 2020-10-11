@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils;
+package dev.qruet.anvillot.util;
 
 import org.bukkit.inventory.ItemStack;
 

@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils;
+package dev.qruet.anvillot.util;
 
 public enum RepairType {
     //TODO Add ability to control cost increments for each item in anvil

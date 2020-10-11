@@ -5,16 +5,13 @@ import dev.qruet.anvillot.bar.v1_15_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
-import dev.qruet.anvillot.utils.L;
-import dev.qruet.anvillot.utils.ReflectionUtils;
-import dev.qruet.anvillot.utils.RepairCostCalculator;
-import dev.qruet.anvillot.utils.num.Int;
+import dev.qruet.anvillot.util.L;
+import dev.qruet.anvillot.util.ReflectionUtils;
+import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.boss.BarFlag;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -224,21 +221,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             owner.playerConnection.sendPacket(defaultMode);
         }
 
-        if (maxCost != -1 && levelCost.get() > maxCost) {
-            updateCost(maxCost);
-        } else {
-            int rPa = first.getRepairCost();
-            int rPb = RepairCostCalculator.calculateCost(CraftItemStack.asBukkitCopy(second));
-
-            int bonus = 0;
-            if (!StringUtils.isEmpty(renameText)) {
-                bonus++;
-            }
-            updateCost(Math.max(maxCost, (rPa + rPb) + bonus)); //update current repair cost
-
-            if (!result.isEmpty())
-                result.setRepairCost((int) (Math.max(rPa, rPb) * 1.4f)); //increment result item's repair cost
-        }
+        IContainerAnvilLot.super.e(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), levelCost.get());
 
         PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
         owner.playerConnection.sendPacket(spack);
@@ -285,6 +268,16 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     public Player getOwner() {
         return owner.getBukkitEntity();
+    }
+
+    @Override
+    public int getMaximumCost() {
+        return maxCost;
+    }
+
+    @Override
+    public String getRenameText() {
+        return renameText;
     }
 
     private void reset() {

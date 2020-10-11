@@ -3,7 +3,7 @@
   <parent>
     <artifactId>AnvilLot</artifactId>
     <groupId>dev.qruet.anvillot</groupId>
-    <version>3.3_01-ea</version>
+    <version>3.3_02</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>AnvilLot-Distro</artifactId>
@@ -30,6 +30,7 @@
               <artifactSet>
                 <includes>
                   <include>dev.qruet.anvillot:AnvilLot-*</include>
+                  <include>org.scijava</include>
                 </includes>
               </artifactSet>
             </configuration>

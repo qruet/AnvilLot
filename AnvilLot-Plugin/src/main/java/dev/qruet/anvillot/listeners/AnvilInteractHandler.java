@@ -1,7 +1,7 @@
 package dev.qruet.anvillot.listeners;
 
 import dev.qruet.anvillot.nms.VersionHandler;
-import dev.qruet.anvillot.utils.Tasky;
+import dev.qruet.anvillot.util.Tasky;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,7 +28,7 @@ public class AnvilInteractHandler implements Listener {
             return;
 
         Player player = e.getPlayer();
-        if (player.getGameMode() == GameMode.CREATIVE)
+        if (player.getGameMode() == GameMode.CREATIVE) //no need to handle creative players (no anvil cap exists)
             return;
 
         Block block = e.getClickedBlock();
@@ -38,6 +38,7 @@ public class AnvilInteractHandler implements Listener {
         e.setCancelled(true);
         Tasky.sync(t -> {
             if (!player.isOnGround()) {
+                //push player down to the ground if they are mid air from jumping prior to clicking the anvil
                 player.setVelocity(new Vector(0, -0.3, 0));
             } else {
                 t.cancel();

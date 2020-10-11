@@ -2,7 +2,7 @@
 #        Got an issue to report? Message me on either the discussion page, privately, or submit an issue report on
 #        the github page!
 #        Please leave a review on the spigot page, it truly helps a lot!
-#        Solution developed by qruet (geekles)
+#        Solution developed by qruet
 # ===================================================================================================================
 # ===================================================================================================================
 # The cost of xp levels for repairing a item
@@ -15,9 +15,12 @@ Default Max Repair Cost: -1
 #   first_item -> Repair cost of item in 1st anvil slot
 #   second_item -> Repair cost of item in 2nd anvil slot
 
+# Responsible for the calculated cost of the anvil
 Repair Cost Equation: "first_item + second_item + rename_fee"
 
-Repair Progression Equation: "max(first_item,second_item)*1.4"
+# Responsible for the cost of the result anvil item
+Repair Progression Equation: "round(max(1, first_item)*2)"
+
 # ====================================================================================================================
 # ====================================================================================================================
 # This section is dedicated towards configuring the boss bar messages that popup throughout the repair process

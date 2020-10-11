@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils.num;
+package dev.qruet.anvillot.util.num;
 
 import java.util.TreeMap;
 

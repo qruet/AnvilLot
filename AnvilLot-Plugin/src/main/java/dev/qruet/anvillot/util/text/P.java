@@ -1,7 +1,7 @@
-package dev.qruet.anvillot.utils.text;
+package dev.qruet.anvillot.util.text;
 
 import dev.qruet.anvillot.AnvilLot;
-import dev.qruet.anvillot.utils.ReflectionUtils;
+import dev.qruet.anvillot.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

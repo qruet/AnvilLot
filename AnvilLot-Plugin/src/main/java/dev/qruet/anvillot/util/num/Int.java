@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils.num;
+package dev.qruet.anvillot.util.num;
 
 /**
  * @author qruet

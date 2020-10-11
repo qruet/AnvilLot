@@ -1,4 +1,4 @@
-package dev.qruet.anvillot.utils.text;
+package dev.qruet.anvillot.util.text;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,7 +30,6 @@ public class T {
         return message;
     }
 
-
     public static List<String> LC(List<String> list) {
         List<String> cList = new ArrayList<>();
         for(String msg : list){
@@ -45,6 +44,10 @@ public class T {
             cList.add(T.C(player, msg));
         }
         return cList;
+    }
+
+    public static String center(String message) {
+        return MessageManager.getCenteredMessage(message);
     }
 
 }

@@ -1,12 +1,13 @@
 package dev.qruet.anvillot;
 
-import dev.qruet.anvillot.commands.AnvilLotCmd;
+import dev.qruet.anvillot.commands.CommandManager;
 import dev.qruet.anvillot.config.ConfigDeserialization;
 import dev.qruet.anvillot.listeners.AnvilInteractHandler;
 import dev.qruet.anvillot.nms.VersionHandler;
-import dev.qruet.anvillot.utils.L;
-import dev.qruet.anvillot.utils.Tasky;
-import dev.qruet.anvillot.utils.text.LanguageLibrary;
+import dev.qruet.anvillot.util.L;
+import dev.qruet.anvillot.util.Tasky;
+import dev.qruet.anvillot.util.text.LanguageLibrary;
+import dev.qruet.anvillot.util.text.P;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,17 +24,18 @@ public final class AnvilLot extends JavaPlugin {
 
     public void onEnable() {
         PLUGIN_VERSION = getDescription().getVersion();
+
         getLogger().info("" + LanguageLibrary.START_HEADER);
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.CHECK_VERSION);
 
-        getLogger().warning("You are using a build in early beta, meaning critical bugs may be present." +
-                " Please report any issues that you encounter.");
-
-        if (!VersionHandler.init())
+        if (!VersionHandler.init()) {
+            shutdown(AnvilLot.ShutdownReason.UNSUPPORTED_VERSION);
             return;
+        }
 
-        getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.HOOK_VERSION);
+        getLogger().info(P.R(LanguageLibrary.PREFIX + "" + LanguageLibrary.HOOK_VERSION));
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.LOADING_CONFIG);
+
         Tasky.setPlugin(this);
 
         if (!loadConfig()) {
@@ -44,7 +46,8 @@ public final class AnvilLot extends JavaPlugin {
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.SUCCESS);
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.INITIALIZATION);
 
-        AnvilLotCmd.init();
+        CommandManager.init();
+
         L.R(new AnvilInteractHandler());
 
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.SUCCESS);
@@ -77,7 +80,7 @@ public final class AnvilLot extends JavaPlugin {
                 shutdown(ShutdownReason.NORMAL);
                 break;
             case UNSUPPORTED_VERSION:
-                plugin.getLogger().severe(LanguageLibrary.PREFIX + "" + LanguageLibrary.UNSUPPORTED_VERSION);
+                plugin.getLogger().severe(P.R(LanguageLibrary.PREFIX + "" + LanguageLibrary.UNSUPPORTED_VERSION));
                 shutdown(ShutdownReason.NORMAL);
                 break;
         }
@@ -94,6 +97,11 @@ public final class AnvilLot extends JavaPlugin {
         HandlerList.unregisterAll(this);
     }
 
+    public static void reload() {
+        JavaPlugin.getPlugin(AnvilLot.class).reloadConfig();
+        ConfigDeserialization.deserialize();
+    }
+
     public boolean loadConfig() {
         boolean flag;
         try {
@@ -107,6 +115,5 @@ public final class AnvilLot extends JavaPlugin {
         }
         return flag;
     }
-
 }
 
