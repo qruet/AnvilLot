@@ -22,7 +22,7 @@ public class ReloadCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (!player.hasPermission("solidfix.admin.reload"))
+            if (!player.hasPermission("anvillot.admin.reload"))
                 return false;
         }
         long start = System.currentTimeMillis();

@@ -178,6 +178,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
         defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
         owner.playerConnection.sendPacket(defaultMode);
+        owner.updateAbilities();
 
         this.repairCost = levelCost.get();
     }
@@ -284,6 +285,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d,
                 owner.playerInteractManager.getGameMode().getId());
         owner.playerConnection.sendPacket(packet);
+        owner.updateAbilities();
     }
 
 

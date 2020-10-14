@@ -1,7 +1,6 @@
 package dev.qruet.anvillot.listeners;
 
 import dev.qruet.anvillot.nms.VersionHandler;
-import dev.qruet.anvillot.util.Tasky;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,10 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 
+/**
+ *
+ */
 public class AnvilInteractHandler implements Listener {
 
     private static final LinkedList<Material> MATERIAL_NODES = new LinkedList<Material>() {{
@@ -28,6 +30,10 @@ public class AnvilInteractHandler implements Listener {
             return;
 
         Player player = e.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType().isBlock() && player.isSneaking()) //check if player is trying to place block around anvil
+            return;
+
         if (player.getGameMode() == GameMode.CREATIVE) //no need to handle creative players (no anvil cap exists)
             return;
 
@@ -36,14 +42,6 @@ public class AnvilInteractHandler implements Listener {
             return;
 
         e.setCancelled(true);
-        Tasky.sync(t -> {
-            if (!player.isOnGround()) {
-                //push player down to the ground if they are mid air from jumping prior to clicking the anvil
-                player.setVelocity(new Vector(0, -0.3, 0));
-            } else {
-                t.cancel();
-            }
-        }, 1L, 5L);
 
         VersionHandler.openContainer(player);
     }

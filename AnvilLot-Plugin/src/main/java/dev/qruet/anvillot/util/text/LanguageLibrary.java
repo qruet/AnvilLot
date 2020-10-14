@@ -21,7 +21,7 @@ public enum LanguageLibrary {
     COMMAND_RELOAD(" &2&l| " + PREFIX + "&aSuccessfully reloaded configuration in %tms!"),
     COMMAND_INVALID_ENTITY(" &4&l| " + PREFIX + "&cYou must be a player to run that command!"),
 
-    RESOURCE_LINK("https://www.spigotmc.org/resources/anvillot.62905/"),
+    RESOURCE_LINK("https://www.spigotmc.org/resources/anvillot-%E2%9C%AA-a-limitless-forge-experience-%E2%9C%AA.62905/"),
     DONATE_LINK("https://www.paypal.com/paypalme/qruet"),
     DISCORD_LINK("https://discord.com/invite/fx9gm7T");
 

@@ -5,7 +5,7 @@
 
     <groupId>dev.qruet.anvillot</groupId>
     <artifactId>AnvilLot</artifactId>
-    <version>3.3_02</version>
+    <version>3.3_03</version>
     <packaging>pom</packaging>
 
     <name>AnvilLot</name>
