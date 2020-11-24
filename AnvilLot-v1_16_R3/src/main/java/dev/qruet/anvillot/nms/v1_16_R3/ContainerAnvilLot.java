@@ -1,18 +1,18 @@
-package dev.qruet.anvillot.nms.v1_16_R2;
+package dev.qruet.anvillot.nms.v1_16_R3;
 
-import dev.qruet.anvillot.bar.v1_16_R2.ExperienceBar;
-import dev.qruet.anvillot.bar.v1_16_R2.HardLimitBar;
-import dev.qruet.anvillot.bar.v1_16_R2.TooExpensiveBar;
+import dev.qruet.anvillot.bar.v1_16_R3.ExperienceBar;
+import dev.qruet.anvillot.bar.v1_16_R3.HardLimitBar;
+import dev.qruet.anvillot.bar.v1_16_R3.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
 import dev.qruet.anvillot.util.L;
 import dev.qruet.anvillot.util.ReflectionUtils;
 import dev.qruet.anvillot.util.num.Int;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.boss.BarFlag;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -279,7 +279,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
             resultInventory.setItem(0, ItemStack.b);
 
-
             SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
             if (sM != null) {
                 getOwner().playSound(
@@ -321,5 +320,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         owner.playerConnection.sendPacket(packet);
         owner.updateAbilities();
     }
+
 
 }

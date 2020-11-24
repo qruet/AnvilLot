@@ -1,6 +1,7 @@
 package dev.qruet.anvillot.nms.v1_16_R1;
 
 import dev.qruet.anvillot.bar.v1_16_R1.ExperienceBar;
+import dev.qruet.anvillot.bar.v1_16_R1.HardLimitBar;
 import dev.qruet.anvillot.bar.v1_16_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
@@ -26,7 +27,7 @@ import java.util.List;
  * A rewritten form of the anvil container class
  *
  * @author Qruet
- * @version 3.1.0-Beta-SNAPSHOT
+ * @version 3.4.0-Beta-SNAPSHOT
  */
 public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvilLot {
 
@@ -39,8 +40,9 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     private ExperienceBar expBar;
     private TooExpensiveBar errBar;
+    private HardLimitBar hlmBar;
 
-    private int maxCost;
+    private int maxCost = -1;
     private int repairCost;
 
     private final PacketPlayOutGameStateChange defaultMode;
@@ -96,6 +98,16 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                 errFlagList.add(BarFlag.DARKEN_SKY);
             errBar = new TooExpensiveBar(this, errFlagList.toArray(new BarFlag[0]));
         }
+
+        if (GeneralPresets.HARD_LIMIT_BAR_ENABLED) {
+            List<BarFlag> errFlagList = new ArrayList<>();
+            if (GeneralPresets.HardLimitBarPresets.FOG)
+                errFlagList.add(BarFlag.CREATE_FOG);
+            if (GeneralPresets.HardLimitBarPresets.DARK_SKY)
+                errFlagList.add(BarFlag.DARKEN_SKY);
+            hlmBar = new HardLimitBar(this, errFlagList.toArray(new BarFlag[0]));
+        }
+
 
         super.slots.set(2, new Slot(this.resultInventory, 2, 134, 47) {
             public boolean isAllowed(ItemStack itemstack) {
@@ -169,7 +181,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             String permission = pI.getPermission();
             if (!permission.startsWith("anvillot.limit."))
                 return;
-            this.maxCost = Int.P(permission.substring(permission.length() - 1));
+            this.maxCost = Int.P(permission.substring("anvillot.limit.".length()));
         });
 
         if (maxCost == -1) {
@@ -189,6 +201,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             expBar.destroy();
         if (errBar != null)
             errBar.destroy();
+        if (hlmBar != null)
+            hlmBar.destroy();
         reset();
     }
 
@@ -232,6 +246,24 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         repairCost = val;
         levelCost.set(val);
         expBar.update();
+        if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
+            if (hlmBar != null) {
+                if (!hlmBar.isEnabled())
+                    hlmBar.enable();
+            }
+
+            resultInventory.setItem(0, ItemStack.b);
+
+            SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
+            }
+            return;
+        }
         if (getOwner().getLevel() < repairCost) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
             owner.playerConnection.sendPacket(packet);
@@ -247,18 +279,20 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
             resultInventory.setItem(0, ItemStack.b);
 
-            if (GeneralPresets.TOO_EXPENSIVE_ALERT_ENABLED) {
-                SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
-                if (sM != null) {
-                    getOwner().playSound(
-                            getOwner().getLocation(),
-                            sM.getSound(),
-                            sM.getVolume(),
-                            sM.getPitch());
-                }
+
+            SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
             }
+
             return;
         }
+        if (hlmBar != null && hlmBar.isEnabled())
+            hlmBar.disable();
         if (errBar != null && errBar.isEnabled())
             errBar.disable();
     }
@@ -287,6 +321,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         owner.playerConnection.sendPacket(packet);
         owner.updateAbilities();
     }
+
 
 
 }

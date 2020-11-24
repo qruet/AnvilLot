@@ -31,9 +31,16 @@ public class HelpCmd implements CommandExecutor {
             player.sendMessage("");
 
             player.sendMessage(T.C("    &fCapped Repair Cost: "));
+
             player.sendMessage(T.C(T.center("&a&o" + GeneralPresets.DEFAULT_MAX_COST + "xp")));
             player.sendMessage(T.C("      &e* &7Defined maximum cost for repairs. Repairs will never be"));
             player.sendMessage(T.C("        &7more than " + GeneralPresets.DEFAULT_MAX_COST + "xp."));
+            player.sendMessage("");
+
+            player.sendMessage(T.C("    &fHard Limit Enabled: "));
+
+            player.sendMessage(T.C(T.center("&a&o" + GeneralPresets.HARD_LIMIT_BAR_ENABLED)));
+            player.sendMessage(T.C("      &e* &7Cap limit behaviour similar to vanilla's"));
             player.sendMessage("");
 
             player.sendMessage(T.C("    &fRepair Cost Calculation Equation:"));

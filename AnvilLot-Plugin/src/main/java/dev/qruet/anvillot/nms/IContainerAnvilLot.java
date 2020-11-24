@@ -4,7 +4,6 @@ import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.util.RepairCostCalculator;
 import dev.qruet.anvillot.util.java.Pair;
 import dev.qruet.anvillot.util.math.Equation;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 /**
@@ -57,20 +56,33 @@ public interface IContainerAnvilLot {
      */
     default void e(IItemStackWrapper first, IItemStackWrapper second, IItemStackWrapper result, int levelCost) {
         if (getMaximumCost() != -1 && levelCost > getMaximumCost()) {
+            if(GeneralPresets.HARD_LIMIT) {
+                updateCost(-1);
+                return;
+            }
             updateCost(getMaximumCost());
         } else {
             int rPa = first.getRepairCost();
             int rPb = RepairCostCalculator.calculateCost(second.getBukkitCopy());
 
             int bonus = 0;
-            if (!StringUtils.isEmpty(getRenameText())) {
+            if (!getRenameText().isEmpty()) {
                 bonus++;
             }
 
-            updateCost((int) Equation.evaluate(GeneralPresets.REPAIR_COST_EQUATION,
+            int cost = (int) Equation.evaluate(GeneralPresets.REPAIR_COST_EQUATION,
                     new Pair<>("first_item", (double) rPa),
                     new Pair<>("second_item", (double) rPb),
-                    new Pair<>("rename_fee", (double) bonus)));
+                    new Pair<>("rename_fee", (double) bonus));
+
+            if(getMaximumCost() != -1 && levelCost > getMaximumCost()) {
+                if(GeneralPresets.HARD_LIMIT) {
+                    updateCost(-1);
+                    return;
+                }
+            }
+
+            updateCost(cost);
 
             if (!result.isEmpty()) {
                 result.setRepairCost((int) Equation.evaluate(GeneralPresets.REPAIR_PROGRESSION_EQUATION,

@@ -5,7 +5,7 @@
 
     <groupId>dev.qruet.anvillot</groupId>
     <artifactId>AnvilLot</artifactId>
-    <version>3.3_03</version>
+    <version>3.4_01</version>
     <packaging>pom</packaging>
 
     <name>AnvilLot</name>
@@ -23,6 +23,7 @@
         <module>AnvilLot-JDK_14</module>
         <module>AnvilLot-v1_16_R1</module>
         <module>AnvilLot-v1_16_R2</module>
+        <module>AnvilLot-v1_16_R3</module>
     </modules>
 
     <profiles>
@@ -35,6 +36,7 @@
                 <module>AnvilLot-v1_15_R1</module>
                 <module>AnvilLot-v1_16_R1</module>
                 <module>AnvilLot-v1_16_R2</module>
+                <module>AnvilLot-v1_16_R3</module>
                 <module>AnvilLot-JDK_8</module>
                 <module>AnvilLot-JDK_14</module>
                 <module>AnvilLot-Distro</module>

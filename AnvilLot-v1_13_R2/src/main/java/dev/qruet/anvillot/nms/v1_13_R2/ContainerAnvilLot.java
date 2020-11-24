@@ -1,6 +1,7 @@
 package dev.qruet.anvillot.nms.v1_13_R2;
 
 import dev.qruet.anvillot.bar.v1_13_R2.ExperienceBar;
+import dev.qruet.anvillot.bar.v1_13_R2.HardLimitBar;
 import dev.qruet.anvillot.bar.v1_13_R2.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
@@ -39,6 +40,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     private ExperienceBar expBar;
     private TooExpensiveBar errBar;
+    private HardLimitBar hlmBar;
 
     private int maxCost;
     private int repairCost;
@@ -105,6 +107,15 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (GeneralPresets.TooExpensiveBarPresets.DARK_SKY)
                 errFlagList.add(BarFlag.DARKEN_SKY);
             errBar = new TooExpensiveBar(this, errFlagList.toArray(new BarFlag[0]));
+        }
+
+        if (GeneralPresets.HARD_LIMIT_BAR_ENABLED) {
+            List<BarFlag> errFlagList = new ArrayList<>();
+            if (GeneralPresets.HardLimitBarPresets.FOG)
+                errFlagList.add(BarFlag.CREATE_FOG);
+            if (GeneralPresets.HardLimitBarPresets.DARK_SKY)
+                errFlagList.add(BarFlag.DARKEN_SKY);
+            hlmBar = new HardLimitBar(this, errFlagList.toArray(new BarFlag[0]));
         }
 
         super.slots.set(2, new Slot(this.resultInventory, 2, 134, 47) {
@@ -179,7 +190,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             String permission = pI.getPermission();
             if (!permission.startsWith("anvillot.limit."))
                 return;
-            this.maxCost = Int.P(permission.substring(permission.length() - 1));
+            this.maxCost = Int.P(permission.substring("anvillot.limit.".length()));
         });
 
         if (maxCost == -1) {
@@ -199,6 +210,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             expBar.destroy();
         if (errBar != null)
             errBar.destroy();
+        if (hlmBar != null)
+            hlmBar.destroy();
         reset();
     }
 
@@ -242,6 +255,25 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         repairCost = val;
         levelCost = val;
         expBar.update();
+
+        if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
+            if (hlmBar != null) {
+                if (!hlmBar.isEnabled())
+                    hlmBar.enable();
+            }
+
+            resultInventory.setItem(0, ItemStack.a);
+
+            SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
+            }
+            return;
+        }
         if (getOwner().getLevel() < repairCost) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, 3);
             owner.playerConnection.sendPacket(packet);
@@ -257,18 +289,20 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
             resultInventory.setItem(0, ItemStack.a);
 
-            if (GeneralPresets.TOO_EXPENSIVE_ALERT_ENABLED) {
-                SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
-                if (sM != null) {
-                    getOwner().playSound(
-                            getOwner().getLocation(),
-                            sM.getSound(),
-                            sM.getVolume(),
-                            sM.getPitch());
-                }
+
+            SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
             }
+
             return;
         }
+        if (hlmBar != null && hlmBar.isEnabled())
+            hlmBar.disable();
         if (errBar != null && errBar.isEnabled())
             errBar.disable();
     }

@@ -11,30 +11,43 @@ import java.util.Arrays;
 public class GeneralPresets {
 
     public static int DEFAULT_MAX_COST = -1;
+    public static boolean HARD_LIMIT = false;
+
     public static SoundMeta TOO_EXPENSIVE_ALERT = null;
+    public static SoundMeta HARD_LIMIT_ALERT = null;
 
     public static String REPAIR_COST_EQUATION;
     public static String REPAIR_PROGRESSION_EQUATION;
 
-    public static boolean TOO_EXPENSIVE_ALERT_ENABLED = true;
     public static boolean EXPERIENCE_BAR_ENABLED = true;
     public static boolean TOO_EXPENSIVE_BAR_ENABLED = true;
+    public static boolean HARD_LIMIT_BAR_ENABLED = false;
 
     public static void init() {
         DEFAULT_MAX_COST = (int) ConfigData.MAX_REPAIR_COST.get();
+        HARD_LIMIT = (boolean) ConfigData.HARD_LIMIT.get();
 
         REPAIR_COST_EQUATION = (String) ConfigData.REPAIR_COST_EQUATION.get();
         REPAIR_PROGRESSION_EQUATION = (String) ConfigData.REPAIR_PROGRESSION_EQUATION.get();
 
-        TOO_EXPENSIVE_ALERT_ENABLED = (boolean) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_ENABLED.get();
         EXPERIENCE_BAR_ENABLED = (boolean) ConfigData.EXPERIENCE_BAR_ENABLED.get();
         TOO_EXPENSIVE_BAR_ENABLED = (boolean) ConfigData.TOO_EXPENSIVE_BAR_ENABLED.get();
+        HARD_LIMIT_BAR_ENABLED = HARD_LIMIT;
+
         if ((boolean) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_ENABLED.get()) {
             String sN = (String) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_SOUND.get();
             Sound sound = Sound.valueOf(sN);
             float volume = (float) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_VOLUME.get();
             float pitch = (float) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_PITCH.get();
             TOO_EXPENSIVE_ALERT = new SoundMeta(sound, volume, pitch);
+        }
+
+        if ((boolean) ConfigData.HARD_LIMIT_SOUND_EFFECT_ENABLED.get()) {
+            String sN = (String) ConfigData.HARD_LIMIT_SOUND_EFFECT_SOUND.get();
+            Sound sound = Sound.valueOf(sN);
+            float volume = (float) ConfigData.HARD_LIMIT_SOUND_EFFECT_VOLUME.get();
+            float pitch = (float) ConfigData.HARD_LIMIT_SOUND_EFFECT_PITCH.get();
+            HARD_LIMIT_ALERT = new SoundMeta(sound, volume, pitch);
         }
 
         if (EXPERIENCE_BAR_ENABLED) {
@@ -82,7 +95,7 @@ public class GeneralPresets {
         public static BarColor COLOR = BarColor.RED;
         public static BarStyle STYLE = BarStyle.SOLID;
         public static boolean FOG = true;
-        public static boolean DARK_SKY = true;
+        public static boolean DARK_SKY = false;
 
         public static void init() {
             TITLE = (String) ConfigData.TOO_EXPENSIVE_BAR_TITLE.get();
@@ -103,6 +116,35 @@ public class GeneralPresets {
 
             FOG = (boolean) ConfigData.TOO_EXPENSIVE_BAR_FOG.get();
             DARK_SKY = (boolean) ConfigData.TOO_EXPENSIVE_BAR_DARK_SKY.get();
+        }
+    }
+
+    public static class HardLimitBarPresets {
+        public static String TITLE = "&cRepair Limit Reached";
+        public static BarColor COLOR = BarColor.RED;
+        public static BarStyle STYLE = BarStyle.SOLID;
+        public static boolean FOG = true;
+        public static boolean DARK_SKY = true;
+
+        public static void init() {
+            TITLE = (String) ConfigData.HARD_LIMIT_BAR_TITLE.get();
+
+            String bC = String.valueOf(ConfigData.HARD_LIMIT_BAR_COLOR.get()).toUpperCase();
+            Preconditions.checkArgument(Arrays.stream(BarColor.values()).anyMatch(c -> {
+                return c.toString().equals(bC);
+            }), "Invalid bar color specified in config for \"Too Expensive Bar\"." +
+                    " Please enter one of the following colors: " + Arrays.toString(BarColor.values()));
+            COLOR = BarColor.valueOf(bC);
+
+            String bS = String.valueOf(ConfigData.HARD_LIMIT_BAR_STYLE.get()).toUpperCase();
+            Preconditions.checkArgument(Arrays.stream(BarStyle.values()).anyMatch(c -> {
+                return c.toString().equals(bS);
+            }), "Invalid bar style specified in config for \"Too Expensive Bar\"." +
+                    " Please enter one of the following styles: " + Arrays.toString(BarStyle.values()));
+            STYLE = BarStyle.valueOf(bS);
+
+            FOG = (boolean) ConfigData.HARD_LIMIT_BAR_FOG.get();
+            DARK_SKY = (boolean) ConfigData.HARD_LIMIT_BAR_DARK_SKY.get();
         }
     }
 }

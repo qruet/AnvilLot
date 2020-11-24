@@ -3,6 +3,7 @@ package dev.qruet.anvillot.config;
 public enum ConfigData {
 
     MAX_REPAIR_COST("Default Max Repair Cost", Integer.class),
+    HARD_LIMIT("Hard Limit", Boolean.class),
 
     REPAIR_COST_EQUATION("Repair Cost Equation", String.class),
     REPAIR_PROGRESSION_EQUATION("Repair Progression Equation", String.class),
@@ -23,11 +24,24 @@ public enum ConfigData {
     TOO_EXPENSIVE_BAR_FOG(TOO_EXPENSIVE_BAR + ".Fog", Boolean.class),
     TOO_EXPENSIVE_BAR_DARK_SKY(TOO_EXPENSIVE_BAR + ".Dark Sky", Boolean.class),
 
+    HARD_LIMIT_BAR("Hard Limit Bar", RootPath.class),
+    HARD_LIMIT_BAR_TITLE(HARD_LIMIT_BAR + ".Title", String.class),
+    HARD_LIMIT_BAR_COLOR(HARD_LIMIT_BAR + ".Bar Color", String.class),
+    HARD_LIMIT_BAR_STYLE(HARD_LIMIT_BAR + ".Bar Style", String.class),
+    HARD_LIMIT_BAR_FOG(HARD_LIMIT_BAR + ".Fog", Boolean.class),
+    HARD_LIMIT_BAR_DARK_SKY(HARD_LIMIT_BAR + ".Dark Sky", Boolean.class),
+
     TOO_EXPENSIVE_SOUND_EFFECT("Too Expensive Sound Effect", RootPath.class),
     TOO_EXPENSIVE_SOUND_EFFECT_ENABLED(TOO_EXPENSIVE_SOUND_EFFECT + ".Enabled", Boolean.class),
     TOO_EXPENSIVE_SOUND_EFFECT_SOUND(TOO_EXPENSIVE_SOUND_EFFECT + ".Sound", String.class),
     TOO_EXPENSIVE_SOUND_EFFECT_VOLUME(TOO_EXPENSIVE_SOUND_EFFECT + ".Volume", Float.class),
-    TOO_EXPENSIVE_SOUND_EFFECT_PITCH(TOO_EXPENSIVE_SOUND_EFFECT + ".Pitch", Float.class);
+    TOO_EXPENSIVE_SOUND_EFFECT_PITCH(TOO_EXPENSIVE_SOUND_EFFECT + ".Pitch", Float.class),
+
+    HARD_LIMIT_SOUND_EFFECT("Hard Limit Sound Effect", RootPath.class),
+    HARD_LIMIT_SOUND_EFFECT_ENABLED( HARD_LIMIT_SOUND_EFFECT + ".Enabled", Boolean.class),
+    HARD_LIMIT_SOUND_EFFECT_SOUND( HARD_LIMIT_SOUND_EFFECT + ".Sound", String.class),
+    HARD_LIMIT_SOUND_EFFECT_VOLUME( HARD_LIMIT_SOUND_EFFECT + ".Volume", Float.class),
+    HARD_LIMIT_SOUND_EFFECT_PITCH( HARD_LIMIT_SOUND_EFFECT + ".Pitch", Float.class);
 
     private final String path;
     private final Class<?> type;

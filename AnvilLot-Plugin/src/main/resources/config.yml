@@ -5,10 +5,15 @@
 #        Solution developed by qruet
 # ===================================================================================================================
 # ===================================================================================================================
+
 # The cost of xp levels for repairing a item
 # Note this is not the total xp level for repairing both items in the anvil. (Lower Max Repair Cost drops the total)
 # Note you can modify the max repair cost for each player with the permission anvillot.limit.#
 Default Max Repair Cost: -1
+
+# The cost will cap at the defined value for Default Max Repair Cost.
+# Should the limit behave like vanilla and make the item unrepairable at the specified repair cost?
+Hard Limit: false
 
 # Variables:
 #   rename_fee -> variable responsible for adding rename fee (maximum 1)
@@ -29,22 +34,36 @@ Experience Bar:
   Title: "&a%level" # Title displayed on top of the boss bar
   Bar Color: "GREEN" # Possible Colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW
   Bar Style: "SEGMENTED_12" # Possible Styles: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
-  Fog: false
-  Dark Sky: false
+  Fog: false # display background fog when warning pops up?
+  Dark Sky: false # makes the atmosphere spookier
 
 Too Expensive Bar:
   Enabled: true
   Title: "&cExperience Cost %cost"
   Bar Color: "RED"
   Bar Style: "SOLID"
-  Fog: true # display background fog when warning pops up?
-  Dark Sky: true # makes the atmosphere spookier
+  Fog: true
+  Dark Sky: false
+
+# Enabled when Hard Limit option is enabled
+Hard Limit Bar:
+  Title: "&cRepair Limit Reached"
+  Bar Color: "RED"
+  Bar Style: "SOLID"
+  Fog: true
+  Dark Sky: true
 # =====================================================================================================================
 # =====================================================================================================================
 Too Expensive Sound Effect:
   Enabled: true
-  # list of 1.15 bukkit compatible sound effects can be found here:
+  # list of bukkit compatible sound effects can be found here:
   # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
   Sound: "BLOCK_ANVIL_LAND"
   Volume: 0.1
   Pitch: 1.4
+
+Hard Limit Sound Effect:
+  Enabled: true
+  Sound: "ITEM_TRIDENT_THUNDER"
+  Volume: 0.2
+  Pitch: 2.0
