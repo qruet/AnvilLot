@@ -66,7 +66,7 @@ public interface IContainerAnvilLot {
             int rPb = RepairCostCalculator.calculateCost(second.getBukkitCopy());
 
             int bonus = 0;
-            if (!getRenameText().isEmpty()) {
+            if (getRenameText() != null && !(getRenameText().isEmpty())) {
                 bonus++;
             }
 
