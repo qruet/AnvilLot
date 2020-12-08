@@ -8,6 +8,7 @@ import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
 import dev.qruet.anvillot.util.L;
 import dev.qruet.anvillot.util.ReflectionUtils;
+import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.boss.BarFlag;
@@ -34,7 +35,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     private final IInventory repairInventory;
     private final IInventory resultInventory;
 
-    private int h;
+    private LiveReflector<Integer> h;
 
     private final EntityPlayer owner;
 
@@ -66,8 +67,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             rlI = resultInventory.get(this);
 
             Field h = ContainerAnvil.class.getDeclaredField("h");
-            h.setAccessible(true);
-            this.h = (int) h.get(this);
+            this.h = new LiveReflector<>(this, h);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -129,10 +129,10 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                 owner.playerConnection.sendPacket(packet);
 
                 repairInventory.setItem(0, ItemStack.b);
-                if (h > 0) {
+                if (h.get() > 0) {
                     ItemStack itemstack1 = repairInventory.getItem(1);
-                    if (!itemstack1.isEmpty() && itemstack1.getCount() > h) {
-                        itemstack1.subtract(h);
+                    if (!itemstack1.isEmpty() && itemstack1.getCount() > h.get()) {
+                        itemstack1.subtract(h.get());
                         repairInventory.setItem(1, itemstack1);
                     } else {
                         repairInventory.setItem(1, ItemStack.b);
