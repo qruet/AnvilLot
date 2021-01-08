@@ -11,14 +11,17 @@ import dev.qruet.anvillot.util.ReflectionUtils;
 import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -229,6 +232,12 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         ItemStack second = repairInventory.getItem(1);
         ItemStack result = resultInventory.getItem(0);
 
+        PrepareAnvilEvent event = new PrepareAnvilEvent(getBukkitView(),
+                CraftItemStack.asCraftMirror(result).clone());
+        Bukkit.getPluginManager().callEvent(event);
+        result = CraftItemStack.asNMSCopy(event.getResult());
+        resultInventory.setItem(0, result);
+
         if (repairCost >= 40) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 1);
             owner.playerConnection.sendPacket(packet);
@@ -240,6 +249,10 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
         PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
         owner.playerConnection.sendPacket(spack);
+    }
+
+    public void setRepairCost(int i) {
+
     }
 
     public void updateCost(int val) {

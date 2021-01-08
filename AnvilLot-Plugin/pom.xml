@@ -7,7 +7,7 @@
     <parent>
         <artifactId>AnvilLot</artifactId>
         <groupId>dev.qruet.anvillot</groupId>
-        <version>3.4_02</version>
+        <version>3.4_03</version>
     </parent>
 
     <properties>
@@ -74,8 +74,8 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

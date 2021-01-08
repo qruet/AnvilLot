@@ -1,5 +1,5 @@
 name: AnvilLot
-version: 3.2_01-ea-b51
+version: 3.4_03-b5
 main: dev.qruet.anvillot.AnvilLot
 author: qruet
 description: Remove the limitations posed by default vanilla anvils and maximize their repair costs to a
