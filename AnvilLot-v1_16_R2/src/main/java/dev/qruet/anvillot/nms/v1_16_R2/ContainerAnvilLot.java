@@ -254,7 +254,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     public void updateCost(int val) {
         repairCost = val;
         levelCost.set(val);
-        expBar.update();
+        if(expBar != null)
+            expBar.update();
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
             if (hlmBar != null) {
                 if (!hlmBar.isEnabled())
