@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public final class AnvilLot extends JavaPlugin {
 
+    private static VersionHandler handler;
     public static String PLUGIN_VERSION;
 
     public void onEnable() {
@@ -28,7 +29,8 @@ public final class AnvilLot extends JavaPlugin {
         getLogger().info("" + LanguageLibrary.START_HEADER);
         getLogger().info(LanguageLibrary.PREFIX + "" + LanguageLibrary.CHECK_VERSION);
 
-        if (!VersionHandler.init()) {
+        handler = VersionHandler.getHandlerInstance();
+        if (handler == null) {
             shutdown(AnvilLot.ShutdownReason.UNSUPPORTED_VERSION);
             return;
         }
@@ -84,6 +86,10 @@ public final class AnvilLot extends JavaPlugin {
                 shutdown(ShutdownReason.NORMAL);
                 break;
         }
+    }
+
+    public static VersionHandler getHandler() {
+        return handler;
     }
 
     public static void shutdown(String message) {

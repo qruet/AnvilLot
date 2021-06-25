@@ -58,13 +58,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         Object rlI = null;
         try {
             Field repairInventory = ContainerAnvil.class.getDeclaredField("repairInventory");
-            ReflectionUtils.makeNonFinal(repairInventory);
+            
             repairInventory.setAccessible(true);
 
             rpI = repairInventory.get(this);
 
             Field resultInventory = ContainerAnvil.class.getDeclaredField("resultInventory");
-            ReflectionUtils.makeNonFinal(resultInventory);
+            
             resultInventory.setAccessible(true);
 
             rlI = resultInventory.get(this);

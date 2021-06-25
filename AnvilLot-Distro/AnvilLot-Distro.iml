@@ -21,7 +21,6 @@
     <orderEntry type="module" module-name="AnvilLot-v1_16_R1" />
     <orderEntry type="module" module-name="AnvilLot-v1_16_R2" />
     <orderEntry type="module" module-name="AnvilLot-v1_16_R3" />
-    <orderEntry type="module" module-name="AnvilLot-JDK_14" />
-    <orderEntry type="module" module-name="AnvilLot-JDK_8" />
+    <orderEntry type="module" module-name="AnvilLot-v1_17_R1" />
   </component>
 </module>

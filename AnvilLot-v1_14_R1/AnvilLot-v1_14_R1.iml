@@ -14,9 +14,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.14.4-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.scijava:jep:2.4.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.14.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="AnvilLot-Plugin" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.scijava:jep:2.4.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: gov.nist.math:jama:1.0.3" level="project" />

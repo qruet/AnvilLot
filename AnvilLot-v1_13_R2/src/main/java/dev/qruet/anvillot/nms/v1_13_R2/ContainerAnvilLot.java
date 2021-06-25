@@ -63,7 +63,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             } catch (NoSuchFieldException e) {
                 repairInventory = ContainerAnvil.class.getDeclaredField("h");
             }
-            ReflectionUtils.makeNonFinal(repairInventory);
             repairInventory.setAccessible(true);
 
             rpI = repairInventory.get(this);
@@ -74,7 +73,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             } catch (NoSuchFieldException e) {
                 resultInventory = ContainerAnvil.class.getDeclaredField("g");
             }
-            ReflectionUtils.makeNonFinal(resultInventory);
             resultInventory.setAccessible(true);
 
             rlI = resultInventory.get(this);
@@ -263,7 +261,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     public void updateCost(int val) {
         repairCost = val;
         levelCost = val;
-        if(expBar != null)
+        if (expBar != null)
             expBar.update();
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
             if (hlmBar != null) {

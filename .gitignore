@@ -1,5 +1,3 @@
-/AnvilLot-v1_16_R2/AnvilLot-v1_16_R2.iml
-/AnvilLot-v1_16_R1/AnvilLot-v1_16_R1.iml
 /AnvilLot-v1_16_R2/target/
 /AnvilLot-v1_16_R1/target/
 /.idea/
@@ -7,5 +5,9 @@
 /AnvilLot-Distro/AnvilLot-Distro.iml
 /AnvilLot-Distro/dependency-reduced-pom.xml
 /AnvilLot-JDK_8/AnvilLot-JDK_8.iml
-/AnvilLot-v1_16_R3/AnvilLot-v1_16_R3.iml
+
+/AnvilLot-v1_16_R1/AnvilLot-v1_16_R1.iml
 /AnvilLot-v1_16_R2/AnvilLot-v1_16_R2.iml
+/AnvilLot-v1_16_R3/AnvilLot-v1_16_R3.iml
+/AnvilLot-v1_17_R1/AnvilLot-v1_17_R1.iml
+

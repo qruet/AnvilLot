@@ -11,14 +11,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RepairCostCalculator {
 
     private static final Class<?> CraftItemStack;
-    private static final Class<?> ItemStack;
+    private static Class<?> ItemStack;
 
     private static Method asNMSCopy;
     private static Method getRepairCost;
 
     static {
         CraftItemStack = ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack");
-        ItemStack = ReflectionUtils.getNMSClass("ItemStack");
+        if (ReflectionUtils.getIntVersion() < 1170) {
+            ItemStack = ReflectionUtils.getNMSClass("ItemStack");
+        } else {
+            try {
+                ItemStack = Class.forName("net.minecraft.world.item.ItemStack");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         try {
             asNMSCopy = CraftItemStack.getMethod("asNMSCopy", org.bukkit.inventory.ItemStack.class);
             getRepairCost = ItemStack.getMethod("getRepairCost");

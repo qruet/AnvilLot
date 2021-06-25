@@ -58,13 +58,11 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         Object rlI = null;
         try {
             Field repairInventory = ContainerAnvilAbstract.class.getDeclaredField("repairInventory");
-            ReflectionUtils.makeNonFinal(repairInventory);
             repairInventory.setAccessible(true);
 
             rpI = repairInventory.get(this);
 
             Field resultInventory = ContainerAnvilAbstract.class.getDeclaredField("resultInventory");
-            ReflectionUtils.makeNonFinal(resultInventory);
             resultInventory.setAccessible(true);
 
             rlI = resultInventory.get(this);
@@ -258,7 +256,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     public void updateCost(int val) {
         repairCost = val;
         levelCost.set(val);
-        if(expBar != null)
+        if (expBar != null)
             expBar.update();
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
             if (hlmBar != null) {

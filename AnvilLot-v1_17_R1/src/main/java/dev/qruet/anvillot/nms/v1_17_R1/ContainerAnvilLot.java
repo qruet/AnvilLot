@@ -1,21 +1,29 @@
-package dev.qruet.anvillot.nms.v1_16_R2;
+package dev.qruet.anvillot.nms.v1_17_R1;
 
-import dev.qruet.anvillot.bar.v1_16_R2.ExperienceBar;
-import dev.qruet.anvillot.bar.v1_16_R2.HardLimitBar;
-import dev.qruet.anvillot.bar.v1_16_R2.TooExpensiveBar;
+import dev.qruet.anvillot.bar.v1_17_R1.ExperienceBar;
+import dev.qruet.anvillot.bar.v1_17_R1.HardLimitBar;
+import dev.qruet.anvillot.bar.v1_17_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
 import dev.qruet.anvillot.util.L;
-import dev.qruet.anvillot.util.ReflectionUtils;
 import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.network.protocol.game.PacketPlayOutGameStateChange;
+import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.tags.TagsBlock;
+import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.entity.player.PlayerInventory;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BlockAnvil;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarFlag;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -35,10 +43,7 @@ import java.util.List;
  */
 public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvilLot {
 
-    private final IInventory repairInventory;
-    private final IInventory resultInventory;
-
-    private LiveReflector<Integer> h;
+    private LiveReflector<Integer> u;
 
     private final EntityPlayer owner;
 
@@ -54,31 +59,14 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     public ContainerAnvilLot(int i, PlayerInventory playerinventory, final ContainerAccess containeraccess) {
         super(i, playerinventory, containeraccess);
 
-        Object rpI = null;
-        Object rlI = null;
         try {
-            Field repairInventory = ContainerAnvilAbstract.class.getDeclaredField("repairInventory");
-
-            repairInventory.setAccessible(true);
-
-            rpI = repairInventory.get(this);
-
-            Field resultInventory = ContainerAnvilAbstract.class.getDeclaredField("resultInventory");
-
-            resultInventory.setAccessible(true);
-
-            rlI = resultInventory.get(this);
-
-            Field h = ContainerAnvil.class.getDeclaredField("h");
-            this.h = new LiveReflector<>(this, h);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Field u = ContainerAnvil.class.getDeclaredField("u");
+            this.u = new LiveReflector<>(this, u);
+        } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
 
         super.maximumRepairCost = Integer.MAX_VALUE;
-
-        repairInventory = (IInventory) rpI;
-        resultInventory = (IInventory) rlI;
 
         owner = ((CraftPlayer) playerinventory.getOwner()).getHandle();
 
@@ -111,60 +99,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             hlmBar = new HardLimitBar(this, errFlagList.toArray(new BarFlag[0]));
         }
 
-
-        super.slots.set(2, new Slot(this.resultInventory, 2, 134, 47) {
-            public boolean isAllowed(ItemStack itemstack) {
-                return false;
-            }
-
-            public boolean isAllowed(EntityHuman entityhuman) {
-                return (entityhuman.abilities.canInstantlyBuild || entityhuman.expLevel >= repairCost) && this.hasItem();
-            }
-
-            public ItemStack a(EntityHuman entityhuman, ItemStack itemstack) {
-                if (!entityhuman.abilities.canInstantlyBuild) {
-                    entityhuman.levelDown(-repairCost);
-                    if (expBar != null)
-                        expBar.update();
-                }
-
-                PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(-1, -1, playerinventory.getCarried());
-                owner.playerConnection.sendPacket(packet);
-
-                repairInventory.setItem(0, ItemStack.b);
-                if (h.get() > 0) {
-                    ItemStack itemstack1 = repairInventory.getItem(1);
-                    if (!itemstack1.isEmpty() && itemstack1.getCount() > h.get()) {
-                        itemstack1.subtract(h.get());
-                        repairInventory.setItem(1, itemstack1);
-                    } else {
-                        repairInventory.setItem(1, ItemStack.b);
-                    }
-                } else {
-                    repairInventory.setItem(1, ItemStack.b);
-                }
-
-                updateCost(0);
-                containeraccess.a((world, blockposition) -> {
-                    IBlockData iblockdata = world.getType(blockposition);
-                    if (!entityhuman.abilities.canInstantlyBuild && iblockdata.a(TagsBlock.ANVIL) && entityhuman.getRandom().nextFloat() < 0.12F) {
-                        IBlockData iblockdata1 = BlockAnvil.c(iblockdata);
-                        if (iblockdata1 == null) {
-                            world.a(blockposition, false);
-                            world.triggerEffect(1029, blockposition, 0);
-                        } else {
-                            world.setTypeAndData(blockposition, iblockdata1, 2);
-                            world.triggerEffect(1030, blockposition, 0);
-                        }
-                    } else {
-                        world.triggerEffect(1030, blockposition, 0);
-                    }
-
-                });
-                return itemstack;
-            }
-        });
-
         L.R(new Listener() {
             @EventHandler
             public void onDamage(EntityDamageEvent e) {
@@ -187,15 +121,57 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             this.maxCost = Int.P(permission.substring("anvillot.limit.".length()));
         });
 
-        if (maxCost == -1) {
-            maxCost = Integer.MAX_VALUE;
-        }
+        maxCost = maxCost == -1 ? Integer.MAX_VALUE : maxCost;
 
         defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
-        owner.playerConnection.sendPacket(defaultMode);
+        owner.b.sendPacket(defaultMode);
         owner.updateAbilities();
 
-        this.repairCost = levelCost.get();
+        this.repairCost = w.get();
+    }
+
+    @Override
+    public void a(EntityHuman entityhuman, ItemStack itemstack) {
+        if (!entityhuman.getAbilities().d) {
+            entityhuman.levelDown(-repairCost);
+            if (expBar != null)
+                expBar.update();
+        }
+
+        //PacketPlayOutSetSlot packet = new PacketPlayOutSetSlot(-1, -1, playerinventory.getCarried());
+        //owner.b.sendPacket(packet);
+
+        p.setItem(0, ItemStack.b);
+        if (u.get() > 0) {
+            ItemStack itemstack1 = p.getItem(1);
+            if (!itemstack1.isEmpty() && itemstack1.getCount() > u.get()) {
+                itemstack1.subtract(u.get());
+                p.setItem(1, itemstack1);
+            } else {
+                p.setItem(1, ItemStack.b);
+            }
+        } else {
+            p.setItem(1, ItemStack.b);
+        }
+
+        updateCost(0);
+        this.q.a((world, blockposition) -> {
+            IBlockData iblockdata = world.getType(blockposition);
+            if (!entityhuman.getAbilities().d && iblockdata.a(TagsBlock.G) && entityhuman.getRandom().nextFloat() < 0.12F) {
+                IBlockData iblockdata1 = BlockAnvil.e(iblockdata);
+                if (iblockdata1 == null) {
+                    world.a(blockposition, false);
+                    world.triggerEffect(1029, blockposition, 0);
+                    entityhuman.getInventory().f(itemstack);
+                } else {
+                    world.setTypeAndData(blockposition, iblockdata1, 2);
+                    world.triggerEffect(1030, blockposition, 0);
+                }
+            } else {
+                world.triggerEffect(1030, blockposition, 0);
+            }
+
+        });
     }
 
     @Override
@@ -215,45 +191,49 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     }
 
     @Override
-    public ItemStack a(int i, int j, InventoryClickType inventoryclicktype, EntityHuman entityhuman) {
-        if (!(i == 0 || i == 1) && inventoryclicktype == InventoryClickType.PICKUP) {
+    public void a(int i, int j, InventoryClickType inventoryclicktype, EntityHuman entityhuman) {
+        if (!(i == 0 || i == 1) && inventoryclicktype == InventoryClickType.a /* Pickup */) {
             if (getOwner().getLevel() < repairCost)
-                return super.a(i, j, inventoryclicktype, entityhuman);
+                super.a(i, j, inventoryclicktype, entityhuman);
         }
         e();
-        return super.a(i, j, inventoryclicktype, entityhuman);
+        super.a(i, j, inventoryclicktype, entityhuman);
     }
 
     @Override
     public void e() {
         super.e();
 
-        ItemStack first = repairInventory.getItem(0);
-        ItemStack second = repairInventory.getItem(1);
-        ItemStack result = resultInventory.getItem(0);
+        ItemStack first = p.getItem(0); // retrieve item from index 0 in repair inventory
+        ItemStack second = p.getItem(1); // retrieve item from index 1 in repair inventory
+        ItemStack result = o.getItem(0); // retrieve item from index 0 in result inventory
 
         PrepareAnvilEvent event = new PrepareAnvilEvent(getBukkitView(),
                 CraftItemStack.asCraftMirror(result).clone());
         Bukkit.getPluginManager().callEvent(event);
         result = CraftItemStack.asNMSCopy(event.getResult());
-        resultInventory.setItem(0, result);
+        o.setItem(0, result);
 
         if (repairCost >= 40) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 1);
-            owner.playerConnection.sendPacket(packet);
+            owner.b.sendPacket(packet);
         } else {
-            owner.playerConnection.sendPacket(defaultMode);
+            owner.b.sendPacket(defaultMode);
         }
 
-        IContainerAnvilLot.super.e(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), levelCost.get());
+        IContainerAnvilLot.super.e(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), w.get());
 
-        PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
-        owner.playerConnection.sendPacket(spack);
+        PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(j /* window id */, 2, o.getItem(0));
+        owner.b.sendPacket(spack);
+    }
+
+    public void setRepairCost(int i) {
+        updateCost(i);
     }
 
     public void updateCost(int val) {
         repairCost = val;
-        levelCost.set(val);
+        w.set(val);
         if (expBar != null)
             expBar.update();
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
@@ -262,7 +242,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     hlmBar.enable();
             }
 
-            resultInventory.setItem(0, ItemStack.b);
+            o.setItem(0, ItemStack.b);
 
             SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
             if (sM != null) {
@@ -276,9 +256,9 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         }
         if (getOwner().getLevel() < repairCost) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
-            owner.playerConnection.sendPacket(packet);
+            owner.b.sendPacket(packet);
 
-            levelCost.set(40);
+            w.set(40);
 
             if (errBar != null) {
                 if (!errBar.isEnabled())
@@ -287,8 +267,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     errBar.update();
             }
 
-            resultInventory.setItem(0, ItemStack.b);
-
+            o.setItem(0, ItemStack.b);
 
             SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
             if (sM != null) {
@@ -298,7 +277,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                         sM.getVolume(),
                         sM.getPitch());
             }
-
             return;
         }
         if (hlmBar != null && hlmBar.isEnabled())
@@ -322,14 +300,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     @Override
     public String getRenameText() {
-        return renameText;
+        return v;
     }
 
     private void reset() {
-        PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d,
-                owner.playerInteractManager.getGameMode().getId());
-        owner.playerConnection.sendPacket(packet);
+        owner.b.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, owner.d.getGameMode().getId()));
         owner.updateAbilities();
     }
+
 
 }

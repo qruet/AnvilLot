@@ -11,11 +11,11 @@ public enum LanguageLibrary {
     LOADING_CONFIG("Deserializing config data..."),
     INITIALIZATION("Instantiating a few things..."),
     THANKYOU("Thank you for installing AnvilLot! If you're experiencing any issues please report it (see config for details)"),
-    SUCCESS_FINAL("╼&m-----------&r Successfully Loaded &m-----------╾"),
+    SUCCESS_FINAL("&m╼-----------&r Successfully Loaded &m-----------╾"),
     SHUTDOWN("Disabling..."),
     SUCCESS("Success!"),
 
-    START_HEADER(T.center(P.R("&8&m-----------&r AnvilLot %pv &8&m-----------╾"))),
+    START_HEADER(T.center(P.R("&8&m╼-----------&r AnvilLot %pv &8&m-----------╾"))),
     FOOTER(T.center("&8&m------------------------------------╾")),
     COMMAND_NO_PERMISSION(" &4&l| " + PREFIX + "&cYou do not have permission to do that."),
     COMMAND_RELOAD(" &2&l| " + PREFIX + "&aSuccessfully reloaded configuration in %tms!"),
