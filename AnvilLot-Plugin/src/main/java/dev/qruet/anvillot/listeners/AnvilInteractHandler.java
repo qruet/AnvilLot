@@ -1,6 +1,9 @@
 package dev.qruet.anvillot.listeners;
 
 import dev.qruet.anvillot.AnvilLot;
+import dev.qruet.anvillot.nms.VersionHandler;
+import dev.qruet.anvillot.nms.VersionHandlerNMS;
+import dev.qruet.anvillot.util.ReflectionUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -43,7 +46,13 @@ public class AnvilInteractHandler implements Listener {
 
         e.setCancelled(true);
 
-        AnvilLot.getHandler().openContainer(player);
+        VersionHandler handler = AnvilLot.getHandler();
+        if (handler instanceof VersionHandlerNMS) {
+            VersionHandlerNMS nms = (VersionHandlerNMS) handler;
+            nms.openContainer(player, block);
+        } else {
+            handler.openContainer(player);
+        }
     }
 
 }

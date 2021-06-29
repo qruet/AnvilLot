@@ -7,7 +7,6 @@ import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
 import dev.qruet.anvillot.util.L;
-import dev.qruet.anvillot.util.ReflectionUtils;
 import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.server.v1_13_R2.*;
@@ -151,7 +150,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     repairInventory.setItem(1, ItemStack.a);
                 }
 
-                updateCost(0);
+                setRepairCost(0);
 
                 IBlockData iblockdata = world.getType(position);
                 if (!world.isClientSide) {
@@ -252,13 +251,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             owner.playerConnection.sendPacket(defaultMode);
         }
 
-        IContainerAnvilLot.super.e(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), levelCost);
+        IContainerAnvilLot.super.calculate(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), levelCost);
 
         PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, result);
         owner.playerConnection.sendPacket(spack);
     }
 
-    public void updateCost(int val) {
+    public void setRepairCost(int val) {
         repairCost = val;
         levelCost = val;
         if (expBar != null)

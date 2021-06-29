@@ -27,6 +27,12 @@ public interface IItemStackWrapper {
     ItemStack getBukkitCopy();
 
     /**
+     * Get an instance of NMS copy of ItemStack
+     * @return
+     */
+    Object getNMS();
+
+    /**
      * Check if item is "air" (exists)
      * @return net.minecraft ItemStack#isEmpty
      */

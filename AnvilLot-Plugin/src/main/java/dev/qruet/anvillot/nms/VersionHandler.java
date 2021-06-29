@@ -7,7 +7,7 @@ public abstract class VersionHandler {
 
     public static VersionHandler getHandlerInstance() {
         try {
-            if (ReflectionUtils.getIntVersion() < 1170) {
+            if (ReflectionUtils.isLegacy()) {
                 return new VersionHandlerLegacy();
             } else {
                 return new VersionHandlerNMS();

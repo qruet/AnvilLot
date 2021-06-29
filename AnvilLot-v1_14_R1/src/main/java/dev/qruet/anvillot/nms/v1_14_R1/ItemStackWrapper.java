@@ -32,6 +32,11 @@ public class ItemStackWrapper implements IItemStackWrapper {
         return itemStack.isEmpty();
     }
 
+    @Override
+    public Object getNMS() {
+        return itemStack;
+    }
+
     public ItemStack getItemStack() {
         return itemStack;
     }

@@ -8,6 +8,8 @@ import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.world.inventory.Container;
 import net.minecraft.world.inventory.ContainerAccess;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
 
 /**
  * @author qruet
@@ -16,9 +18,11 @@ import org.bukkit.Location;
 public class AnvilLotTileInventory implements ITileInventory {
 
     private final IChatBaseComponent a;
+    private final BlockPosition pos;
 
-    public AnvilLotTileInventory(IChatBaseComponent var1) {
+    public AnvilLotTileInventory(Block block, IChatBaseComponent var1) {
         this.a = var1;
+        this.pos = ((CraftBlock) block).getPosition();
     }
 
     @Override
@@ -28,8 +32,7 @@ public class AnvilLotTileInventory implements ITileInventory {
 
     @Override
     public Container createMenu(int var1, PlayerInventory var2, EntityHuman var3) {
-        Location location = var3.getBukkitEntity().getLocation();
-        return new ContainerAnvilLot(var1, var2, ContainerAccess.at(var3.getWorld(), new BlockPosition(location.getX(), location.getY(), location.getZ())));
+        return new ContainerAnvilLot(var1, var2, ContainerAccess.at(var3.getWorld(), pos));
     }
 
 }

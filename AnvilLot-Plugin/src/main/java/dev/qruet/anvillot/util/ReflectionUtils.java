@@ -14,6 +14,15 @@ public class ReflectionUtils {
 
     private static final Map<Class<?>, Class<?>> CORRESPONDING_TYPES = new HashMap<>();
 
+    /**
+     * Legacy (versions pre 1.17)
+     *
+     * @return Legacy version support enabled
+     */
+    public static boolean isLegacy() {
+        return ReflectionUtils.getIntVersion() < 1170;
+    }
+
     private static Class<?> getPrimitiveType(Class<?> clazz) {
         return CORRESPONDING_TYPES.containsKey(clazz) ? CORRESPONDING_TYPES.get(clazz) : clazz;
     }
@@ -70,7 +79,11 @@ public class ReflectionUtils {
      */
     public static Object invokeMethodWithArgs(String method, Object obj, Object... args) {
         try {
-            return getMethod(method, obj.getClass()).invoke(obj, args);
+            Class<?>[] classes = new Class<?>[args.length];
+            for (int i = 0; i < classes.length; i++) {
+                classes[i] = args[i].getClass();
+            }
+            return getMethod(method, obj.getClass(), classes).invoke(obj, args);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -127,13 +140,14 @@ public class ReflectionUtils {
      *
      * @param className Name of class
      * @return Class object
+     * @deprecated Legacy NMS support
      */
     public static Class<?> getNMSClass(String className) {
         String fullName = "net.minecraft.server." + getVersion() + "." + className;
         Class<?> clazz = null;
         try {
             clazz = Class.forName(fullName);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return clazz;
@@ -174,17 +188,22 @@ public class ReflectionUtils {
         return null;
     }
 
-    /**
-     * Access/Update final fields
-     *
-     * @param field
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
-     */
-    public static void disableFinal(Field field) throws NoSuchFieldException, IllegalAccessException {
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    public static Object getField(Object instance, String name) {
+        if (instance == null)
+            return null;
+
+        Field field = getField(instance.getClass(), name);
+        if (field == null)
+            return null;
+
+        Object val = null;
+        try {
+            val = field.get(instance);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return val;
     }
 
     /**
