@@ -50,7 +50,7 @@ public interface IContainerAnvilLot {
      */
     void setRepairCost(int val);
 
-    default void sendSlotUpdate(int slot, IItemStackWrapper item, int id) {
+    default void sendSlotUpdate(int slot, IItemStackWrapper item, int id, int sId) {
         Class<?> PacketPlayOutSetSlot = null, ItemStack = null, CraftPlayer = null;
 
         CraftPlayer = ReflectionUtils.getCraftBukkitClass("entity.CraftPlayer");
@@ -69,7 +69,7 @@ public interface IContainerAnvilLot {
 
         Object packet = null;
         try {
-            packet = PacketPlayOutSetSlot.getConstructor(int.class, int.class, ItemStack).newInstance(id, slot, item.getNMS());
+            packet = PacketPlayOutSetSlot.getConstructor(int.class, int.class, int.class, ItemStack).newInstance(id, sId, slot, item.getNMS());
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | SecurityException e) {
             e.printStackTrace();
         }

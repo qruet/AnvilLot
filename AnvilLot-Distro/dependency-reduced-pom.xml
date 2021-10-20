@@ -14,7 +14,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.2.0</version>
         <configuration>
-          <outputDirectory>C:/Users/Geekles/Desktop</outputDirectory>
+          <outputDirectory>${OUT_PATH}</outputDirectory>
         </configuration>
       </plugin>
       <plugin>

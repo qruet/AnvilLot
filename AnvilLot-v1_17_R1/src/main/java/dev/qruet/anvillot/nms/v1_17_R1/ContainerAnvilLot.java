@@ -127,7 +127,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         }
 
 
-        sendSlotUpdate(-1, new ItemStackWrapper(entityhuman.getInventory().l.bV.getCarried()), -1);
+        sendSlotUpdate(-1, new ItemStackWrapper(entityhuman.getInventory().l.bV.getCarried()), -1, incrementStateId());
 
         p.setItem(0, ItemStack.b);
         if (u.get() > 0) {
@@ -209,7 +209,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
         IContainerAnvilLot.super.calculate(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), w.get());
 
-        sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j);
+        sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
     }
 
     public void setRepairCost(int val) {
