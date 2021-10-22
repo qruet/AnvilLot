@@ -6,17 +6,17 @@ import dev.qruet.anvillot.bar.v1_17_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
-import dev.qruet.anvillot.util.L;
 import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.network.protocol.game.PacketPlayOutGameStateChange;
-import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
-import net.minecraft.network.protocol.game.PacketPlayOutWindowData;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.tags.TagsBlock;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.Container;
+import net.minecraft.world.inventory.ContainerAccess;
+import net.minecraft.world.inventory.ContainerAnvil;
+import net.minecraft.world.inventory.InventoryClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.BlockAnvil;
 import net.minecraft.world.level.block.state.IBlockData;
@@ -26,10 +26,6 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 
 import java.lang.reflect.Field;
@@ -121,7 +117,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     @Override
     public void a(EntityHuman entityhuman, ItemStack itemstack) {
         if (!entityhuman.getAbilities().d) {
-            entityhuman.levelDown(-repairCost);
+            entityhuman.levelDown(-1 * repairCost);
             if (expBar != null)
                 expBar.update();
         }
@@ -248,6 +244,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             }
 
             o.setItem(0, ItemStack.b);
+            sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
 
             SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
             if (sM != null) {
@@ -266,6 +263,12 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         }
 
         super.d();
+    }
+
+    @Override
+    public void a(String s) {
+        super.a(s);
+        setRepairCost(w.get());
     }
 
     public int getCost() {

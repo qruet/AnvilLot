@@ -6,6 +6,7 @@ import dev.qruet.anvillot.util.text.T;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.craftbukkit.v1_16_R2.boss.CraftBossBar;
 
+@Deprecated
 public class TooExpensiveBar extends CraftBossBar {
 
     private final IContainerAnvilLot anvil;

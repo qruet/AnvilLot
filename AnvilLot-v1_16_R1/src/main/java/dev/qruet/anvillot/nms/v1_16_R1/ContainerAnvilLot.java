@@ -32,6 +32,7 @@ import java.util.List;
  * @author Qruet
  * @version 3.4.0-Beta-SNAPSHOT
  */
+@Deprecated
 public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvilLot {
 
     private final IInventory repairInventory;

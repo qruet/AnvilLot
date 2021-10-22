@@ -4,6 +4,7 @@ import dev.qruet.anvillot.nms.IItemStackWrapper;
 import net.minecraft.server.v1_16_R1.ItemStack;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 
+@Deprecated
 public class ItemStackWrapper implements IItemStackWrapper {
 
     private final ItemStack itemStack;

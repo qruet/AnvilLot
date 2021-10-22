@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
+@Deprecated
 public class ExperienceBar extends CraftBossBar {
 
     private final Listener listener;

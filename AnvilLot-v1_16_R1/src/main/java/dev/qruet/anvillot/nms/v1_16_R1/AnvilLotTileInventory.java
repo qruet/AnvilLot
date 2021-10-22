@@ -7,6 +7,7 @@ import org.bukkit.Location;
  * @author qruet
  * @version 3.1.0-Beta-SNAPSHOT
  */
+@Deprecated
 public class AnvilLotTileInventory implements ITileInventory {
 
     private final IChatBaseComponent a;
