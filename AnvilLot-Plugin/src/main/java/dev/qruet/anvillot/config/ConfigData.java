@@ -31,17 +31,11 @@ public enum ConfigData {
     HARD_LIMIT_BAR_FOG(HARD_LIMIT_BAR + ".Fog", Boolean.class),
     HARD_LIMIT_BAR_DARK_SKY(HARD_LIMIT_BAR + ".Dark Sky", Boolean.class),
 
-    TOO_EXPENSIVE_SOUND_EFFECT("Too Expensive Sound Effect", RootPath.class),
-    TOO_EXPENSIVE_SOUND_EFFECT_ENABLED(TOO_EXPENSIVE_SOUND_EFFECT + ".Enabled", Boolean.class),
-    TOO_EXPENSIVE_SOUND_EFFECT_SOUND(TOO_EXPENSIVE_SOUND_EFFECT + ".Sound", String.class),
-    TOO_EXPENSIVE_SOUND_EFFECT_VOLUME(TOO_EXPENSIVE_SOUND_EFFECT + ".Volume", Float.class),
-    TOO_EXPENSIVE_SOUND_EFFECT_PITCH(TOO_EXPENSIVE_SOUND_EFFECT + ".Pitch", Float.class),
-
-    HARD_LIMIT_SOUND_EFFECT("Hard Limit Sound Effect", RootPath.class),
-    HARD_LIMIT_SOUND_EFFECT_ENABLED( HARD_LIMIT_SOUND_EFFECT + ".Enabled", Boolean.class),
-    HARD_LIMIT_SOUND_EFFECT_SOUND( HARD_LIMIT_SOUND_EFFECT + ".Sound", String.class),
-    HARD_LIMIT_SOUND_EFFECT_VOLUME( HARD_LIMIT_SOUND_EFFECT + ".Volume", Float.class),
-    HARD_LIMIT_SOUND_EFFECT_PITCH( HARD_LIMIT_SOUND_EFFECT + ".Pitch", Float.class);
+    DISABLED_SOUND_EFFECT("Disabled Sound Effect", RootPath.class),
+    DISABLED_SOUND_EFFECT_ENABLED(DISABLED_SOUND_EFFECT + ".Enabled", Boolean.class),
+    DISABLED_SOUND_EFFECT_SOUND(DISABLED_SOUND_EFFECT + ".Sound", String.class),
+    DISABLED_SOUND_EFFECT_VOLUME(DISABLED_SOUND_EFFECT + ".Volume", Float.class),
+    DISABLED_SOUND_EFFECT_PITCH(DISABLED_SOUND_EFFECT + ".Pitch", Float.class);
 
     private final String path;
     private final Class<?> type;

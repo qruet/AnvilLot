@@ -144,7 +144,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     repairInventory.setItem(1, ItemStack.b);
                 }
 
-                setRepairCost(0);
+                updateRepairCost(0);
                 containeraccess.a((world, blockposition) -> {
                     IBlockData iblockdata = world.getType(blockposition);
                     if (!entityhuman.abilities.canInstantlyBuild && iblockdata.a(TagsBlock.ANVIL) && entityhuman.getRandom().nextFloat() < 0.12F) {
@@ -251,7 +251,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         owner.playerConnection.sendPacket(spack);
     }
 
-    public void setRepairCost(int val) {
+    public void updateRepairCost(int val) {
         repairCost = val;
         levelCost.set(val);
         if(expBar != null)
@@ -263,15 +263,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             }
 
             resultInventory.setItem(0, ItemStack.b);
-
-            SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
-            if (sM != null) {
-                getOwner().playSound(
-                        getOwner().getLocation(),
-                        sM.getSound(),
-                        sM.getVolume(),
-                        sM.getPitch());
-            }
             return;
         }
         if (getOwner().getLevel() < repairCost) {
@@ -290,7 +281,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             resultInventory.setItem(0, ItemStack.b);
 
 
-            SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
+            SoundMeta sM = GeneralPresets.DISABLED_ALERT;
             if (sM != null) {
                 getOwner().playSound(
                         getOwner().getLocation(),

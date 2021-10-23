@@ -13,8 +13,7 @@ public class GeneralPresets {
     public static int DEFAULT_MAX_COST = -1;
     public static boolean HARD_LIMIT = false;
 
-    public static SoundMeta TOO_EXPENSIVE_ALERT = null;
-    public static SoundMeta HARD_LIMIT_ALERT = null;
+    public static SoundMeta DISABLED_ALERT = null;
 
     public static String REPAIR_COST_EQUATION;
     public static String REPAIR_PROGRESSION_EQUATION;
@@ -34,20 +33,12 @@ public class GeneralPresets {
         TOO_EXPENSIVE_BAR_ENABLED = (boolean) ConfigData.TOO_EXPENSIVE_BAR_ENABLED.get();
         HARD_LIMIT_BAR_ENABLED = HARD_LIMIT;
 
-        if ((boolean) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_ENABLED.get()) {
-            String sN = (String) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_SOUND.get();
+        if ((boolean) ConfigData.DISABLED_SOUND_EFFECT_ENABLED.get()) {
+            String sN = (String) ConfigData.DISABLED_SOUND_EFFECT_SOUND.get();
             Sound sound = Sound.valueOf(sN);
-            float volume = (float) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_VOLUME.get();
-            float pitch = (float) ConfigData.TOO_EXPENSIVE_SOUND_EFFECT_PITCH.get();
-            TOO_EXPENSIVE_ALERT = new SoundMeta(sound, volume, pitch);
-        }
-
-        if ((boolean) ConfigData.HARD_LIMIT_SOUND_EFFECT_ENABLED.get()) {
-            String sN = (String) ConfigData.HARD_LIMIT_SOUND_EFFECT_SOUND.get();
-            Sound sound = Sound.valueOf(sN);
-            float volume = (float) ConfigData.HARD_LIMIT_SOUND_EFFECT_VOLUME.get();
-            float pitch = (float) ConfigData.HARD_LIMIT_SOUND_EFFECT_PITCH.get();
-            HARD_LIMIT_ALERT = new SoundMeta(sound, volume, pitch);
+            float volume = (float) ConfigData.DISABLED_SOUND_EFFECT_VOLUME.get();
+            float pitch = (float) ConfigData.DISABLED_SOUND_EFFECT_PITCH.get();
+            DISABLED_ALERT = new SoundMeta(sound, volume, pitch);
         }
 
         if (EXPERIENCE_BAR_ENABLED) {

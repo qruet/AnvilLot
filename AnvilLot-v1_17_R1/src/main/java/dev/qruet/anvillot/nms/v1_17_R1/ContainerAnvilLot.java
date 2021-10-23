@@ -32,11 +32,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A rewritten form of the anvil container class
+/*
  *
  * @author Qruet
- * @version 3.4.0-Beta-SNAPSHOT
+ * @version 3.5.0-Beta-SNAPSHOT
  */
 public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvilLot {
 
@@ -107,8 +106,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
         maxCost = maxCost == -1 ? Integer.MAX_VALUE : maxCost;
 
-        defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
-        owner.b.sendPacket(defaultMode);
+        defaultMode = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 1);
+
         owner.updateAbilities();
 
         this.repairCost = w.get();
@@ -121,7 +120,6 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (expBar != null)
                 expBar.update();
         }
-
 
         sendSlotUpdate(-1, new ItemStackWrapper(entityhuman.getInventory().l.bV.getCarried()), -1, incrementStateId());
 
@@ -138,7 +136,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             p.setItem(1, ItemStack.b);
         }
 
-        setRepairCost(0);
+        updateRepairCost(0);
+
         this.q.a((world, blockposition) -> {
             IBlockData iblockdata = world.getType(blockposition);
             if (!entityhuman.getAbilities().d && iblockdata.a(TagsBlock.G) && entityhuman.getRandom().nextFloat() < 0.12F) {
@@ -178,7 +177,18 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     @Override
     public void a(int i, int j, InventoryClickType inventoryclicktype, EntityHuman entityhuman) {
-        super.a(i, j, inventoryclicktype, entityhuman);
+        if (i == 2 && ((hlmBar != null && hlmBar.isEnabled()) || (errBar != null && errBar.isEnabled()))) {
+            SoundMeta sM = GeneralPresets.DISABLED_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
+            }
+        } else {
+            super.a(i, j, inventoryclicktype, entityhuman);
+        }
     }
 
     @Override
@@ -196,41 +206,38 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         result = CraftItemStack.asNMSCopy(event.getResult());
         o.setItem(0, result);
 
-        if (repairCost >= 40) {
-            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 1);
-            owner.b.sendPacket(packet);
-        } else {
-            owner.b.sendPacket(defaultMode);
-        }
+        owner.b.sendPacket(defaultMode);
 
-        IContainerAnvilLot.super.calculate(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), w.get());
+        IContainerAnvilLot.super.calculate(
+                new ItemStackWrapper(first),
+                new ItemStackWrapper(second),
+                new ItemStackWrapper(result),
+                w.get());
 
         sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
     }
 
-    public void setRepairCost(int val) {
+    public void updateRepairCost(int val) {
         repairCost = val;
         w.set(val);
+
         if (expBar != null)
             expBar.update();
 
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
+            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
+            owner.b.sendPacket(packet);
+
             if (hlmBar != null) {
                 if (!hlmBar.isEnabled())
                     hlmBar.enable();
             }
 
-            o.setItem(0, ItemStack.b);
+            sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
+            return;
+        }
 
-            SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
-            if (sM != null) {
-                getOwner().playSound(
-                        getOwner().getLocation(),
-                        sM.getSound(),
-                        sM.getVolume(),
-                        sM.getPitch());
-            }
-        } else if (getOwner().getLevel() < repairCost) {
+        if (getOwner().getLevel() < repairCost) {
             PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.d, 3);
             owner.b.sendPacket(packet);
 
@@ -243,32 +250,34 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     errBar.update();
             }
 
-            o.setItem(0, ItemStack.b);
             sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
-
-            SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
-            if (sM != null) {
-                getOwner().playSound(
-                        getOwner().getLocation(),
-                        sM.getSound(),
-                        sM.getVolume(),
-                        sM.getPitch());
-            }
-        } else {
-            if (hlmBar != null && hlmBar.isEnabled())
-                hlmBar.disable();
-
-            if (errBar != null && errBar.isEnabled())
-                errBar.disable();
+            return;
         }
+
+        if (hlmBar != null && hlmBar.isEnabled())
+            hlmBar.disable();
+
+        if (errBar != null && errBar.isEnabled())
+            errBar.disable();
 
         super.d();
     }
 
+    private boolean bT = false;
+
     @Override
     public void a(String s) {
         super.a(s);
-        setRepairCost(w.get());
+        if (CraftItemStack.asBukkitCopy(p.getItem(0)).getType().isAir())
+            return;
+
+        if (!bT && !p.getItem(0).getName().getString().equals(s)) {
+            bT = true;
+            updateRepairCost(repairCost + 1);
+        } else if (bT && p.getItem(0).getName().getString().equals(s)) {
+            bT = false;
+            updateRepairCost(repairCost - 1);
+        }
     }
 
     public int getCost() {

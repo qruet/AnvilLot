@@ -6,7 +6,6 @@ import dev.qruet.anvillot.util.RepairCostCalculator;
 import dev.qruet.anvillot.util.java.Pair;
 import dev.qruet.anvillot.util.math.Equation;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -44,28 +43,45 @@ public interface IContainerAnvilLot {
     String getRenameText();
 
     /**
-     * Update's repair cost both locally and the player's client
+     * Updates cost and correlating bar messages
      *
      * @param val New cost
      */
-    void setRepairCost(int val);
+    void updateRepairCost(int val);
+
+    default void sendSlotUpdate(int slot, IItemStackWrapper item, int id) {
+        Class<?> PacketPlayOutSetSlot = null, ItemStack = null, CraftPlayer = null;
+
+        CraftPlayer = ReflectionUtils.getCraftBukkitClass("entity.CraftPlayer");
+
+        PacketPlayOutSetSlot = ReflectionUtils.getNMSClass("PacketPlayOutSetSlot");
+        ItemStack = ReflectionUtils.getNMSClass("ItemStack");
+
+        Object packet = null;
+        try {
+            packet = PacketPlayOutSetSlot.getConstructor(int.class, int.class, ItemStack).newInstance(id, slot, item.getNMS());
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | SecurityException e) {
+            e.printStackTrace();
+        }
+
+        Object player = ReflectionUtils.invokeMethod("getHandle", CraftPlayer.cast(getOwner()));
+        Object playerConnection = ReflectionUtils.getField(player, "playerConnection");
+
+        ReflectionUtils.invokeMethodWithArgs("sendPacket", playerConnection, packet);
+    }
 
     default void sendSlotUpdate(int slot, IItemStackWrapper item, int id, int sId) {
         Class<?> PacketPlayOutSetSlot = null, ItemStack = null, CraftPlayer = null;
 
         CraftPlayer = ReflectionUtils.getCraftBukkitClass("entity.CraftPlayer");
 
-        if (ReflectionUtils.isLegacy()) {
-            PacketPlayOutSetSlot = ReflectionUtils.getNMSClass("PacketPlayOutSetSlot");
-            ItemStack = ReflectionUtils.getNMSClass("ItemStack");
-        } else {
-            try {
-                PacketPlayOutSetSlot = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutSetSlot");
-                ItemStack = Class.forName("net.minecraft.world.item.ItemStack");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            PacketPlayOutSetSlot = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutSetSlot");
+            ItemStack = Class.forName("net.minecraft.world.item.ItemStack");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
 
         Object packet = null;
         try {
@@ -75,12 +91,7 @@ public interface IContainerAnvilLot {
         }
 
         Object player = ReflectionUtils.invokeMethod("getHandle", CraftPlayer.cast(getOwner()));
-        Object playerConnection = null;
-        if (ReflectionUtils.isLegacy()) {
-            playerConnection = ReflectionUtils.getField(player, "playerConnection");
-        } else {
-            playerConnection = ReflectionUtils.getField(player, "b");
-        }
+        Object playerConnection = ReflectionUtils.getField(player, "b");
         ReflectionUtils.invokeMethodWithArgs("sendPacket", playerConnection, packet);
     }
 
@@ -95,37 +106,37 @@ public interface IContainerAnvilLot {
     default void calculate(IItemStackWrapper first, IItemStackWrapper second, IItemStackWrapper result, int levelCost) {
         if (getMaximumCost() != -1 && levelCost > getMaximumCost()) {
             if (GeneralPresets.HARD_LIMIT) {
-                setRepairCost(-1);
+                updateRepairCost(-1);
             } else {
-                setRepairCost(getMaximumCost());
+                updateRepairCost(getMaximumCost());
             }
         } else {
             int rPa = first.getRepairCost();
             int rPb = RepairCostCalculator.calculateCost(second.getBukkitCopy());
 
             int bonus = 0;
-            if (getRenameText() != null && !(getRenameText().isEmpty())) {
+            if (!first.getName().equals(getRenameText())) {
                 bonus++;
             }
+
 
             int cost = (int) Equation.evaluate(GeneralPresets.REPAIR_COST_EQUATION,
                     new Pair<>("first_item", (double) rPa),
                     new Pair<>("second_item", (double) rPb),
-                    new Pair<>("rename_fee", (double) bonus));
+                    new Pair<>("rename_fee", (double) 0));
 
             if (getMaximumCost() != -1 && levelCost > getMaximumCost()) {
                 if (GeneralPresets.HARD_LIMIT) {
-                    setRepairCost(-1);
-                    return;
+                    updateRepairCost(-1);
                 }
-            }
+            } else {
+                updateRepairCost(cost);
 
-            setRepairCost(cost);
-
-            if (!result.isEmpty()) {
-                result.setRepairCost((int) Equation.evaluate(GeneralPresets.REPAIR_PROGRESSION_EQUATION,
-                        new Pair<>("first_item", (double) rPa),
-                        new Pair<>("second_item", (double) rPb))); //increment result item's repair cost
+                if (!result.isEmpty()) {
+                    result.setRepairCost((int) Equation.evaluate(GeneralPresets.REPAIR_PROGRESSION_EQUATION,
+                            new Pair<>("first_item", (double) rPa),
+                            new Pair<>("second_item", (double) rPb))); //increment result item's repair cost
+                }
             }
         }
     }

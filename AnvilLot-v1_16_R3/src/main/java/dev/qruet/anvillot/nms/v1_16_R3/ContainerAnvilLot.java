@@ -141,7 +141,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     repairInventory.setItem(1, ItemStack.b);
                 }
 
-                setRepairCost(0);
+                updateRepairCost(0);
                 containeraccess.a((world, blockposition) -> {
                     IBlockData iblockdata = world.getType(blockposition);
                     if (!entityhuman.abilities.canInstantlyBuild && iblockdata.a(TagsBlock.ANVIL) && entityhuman.getRandom().nextFloat() < 0.12F) {
@@ -213,6 +213,17 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     @Override
     public ItemStack a(int i, int j, InventoryClickType inventoryclicktype, EntityHuman entityhuman) {
+        if (i == 2 && ((hlmBar != null && hlmBar.isEnabled()) || (errBar != null && errBar.isEnabled()))) {
+            SoundMeta sM = GeneralPresets.DISABLED_ALERT;
+            if (sM != null) {
+                getOwner().playSound(
+                        getOwner().getLocation(),
+                        sM.getSound(),
+                        sM.getVolume(),
+                        sM.getPitch());
+            }
+        }
+
         if (!(i == 0 || i == 1) && inventoryclicktype == InventoryClickType.PICKUP) {
             if (getOwner().getLevel() < repairCost)
                 return super.a(i, j, inventoryclicktype, entityhuman);
@@ -248,7 +259,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         owner.playerConnection.sendPacket(spack);
     }
 
-    public void setRepairCost(int val) {
+    public void updateRepairCost(int val) {
         repairCost = val;
         levelCost.set(val);
         if (expBar != null)
@@ -259,16 +270,9 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     hlmBar.enable();
             }
 
-            resultInventory.setItem(0, ItemStack.b);
-
-            SoundMeta sM = GeneralPresets.HARD_LIMIT_ALERT;
-            if (sM != null) {
-                getOwner().playSound(
-                        getOwner().getLocation(),
-                        sM.getSound(),
-                        sM.getVolume(),
-                        sM.getPitch());
-            }
+            PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
+            owner.playerConnection.sendPacket(spack);
+            
             return;
         }
         if (getOwner().getLevel() < repairCost) {
@@ -284,16 +288,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     errBar.update();
             }
 
-            resultInventory.setItem(0, ItemStack.b);
-
-            SoundMeta sM = GeneralPresets.TOO_EXPENSIVE_ALERT;
-            if (sM != null) {
-                getOwner().playSound(
-                        getOwner().getLocation(),
-                        sM.getSound(),
-                        sM.getVolume(),
-                        sM.getPitch());
-            }
+            PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
+            owner.playerConnection.sendPacket(spack);
 
             return;
         }
