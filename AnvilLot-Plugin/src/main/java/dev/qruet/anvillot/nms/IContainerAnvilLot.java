@@ -119,11 +119,10 @@ public interface IContainerAnvilLot {
                 bonus++;
             }
 
-
             int cost = (int) Equation.evaluate(GeneralPresets.REPAIR_COST_EQUATION,
                     new Pair<>("first_item", (double) rPa),
                     new Pair<>("second_item", (double) rPb),
-                    new Pair<>("rename_fee", (double) 0));
+                    new Pair<>("rename_fee", (double) bonus));
 
             if (getMaximumCost() != -1 && levelCost > getMaximumCost()) {
                 if (GeneralPresets.HARD_LIMIT) {
@@ -133,9 +132,10 @@ public interface IContainerAnvilLot {
                 updateRepairCost(cost);
 
                 if (!result.isEmpty()) {
-                    result.setRepairCost((int) Equation.evaluate(GeneralPresets.REPAIR_PROGRESSION_EQUATION,
+                    int eval = (int) Equation.evaluate(GeneralPresets.REPAIR_PROGRESSION_EQUATION,
                             new Pair<>("first_item", (double) rPa),
-                            new Pair<>("second_item", (double) rPb))); //increment result item's repair cost
+                            new Pair<>("second_item", (double) rPb));
+                    result.setRepairCost(eval); //increment result item's repair cost
                 }
             }
         }

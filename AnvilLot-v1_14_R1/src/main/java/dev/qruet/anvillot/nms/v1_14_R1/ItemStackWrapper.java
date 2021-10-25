@@ -33,6 +33,11 @@ public class ItemStackWrapper implements IItemStackWrapper {
     }
 
     @Override
+    public String getName() {
+        return itemStack.getName().getString();
+    }
+
+    @Override
     public Object getNMS() {
         return itemStack;
     }

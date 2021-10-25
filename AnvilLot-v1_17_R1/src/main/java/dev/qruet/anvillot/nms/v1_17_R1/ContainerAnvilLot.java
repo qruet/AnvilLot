@@ -6,6 +6,7 @@ import dev.qruet.anvillot.bar.v1_17_R1.TooExpensiveBar;
 import dev.qruet.anvillot.config.GeneralPresets;
 import dev.qruet.anvillot.config.assets.SoundMeta;
 import dev.qruet.anvillot.nms.IContainerAnvilLot;
+import dev.qruet.anvillot.util.L;
 import dev.qruet.anvillot.util.java.LiveReflector;
 import dev.qruet.anvillot.util.num.Int;
 import net.minecraft.network.protocol.game.PacketPlayOutGameStateChange;
@@ -26,6 +27,10 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 
 import java.lang.reflect.Field;
@@ -49,6 +54,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
 
     private int maxCost = -1;
     private int repairCost;
+
+    private boolean bT = false;
 
     private final PacketPlayOutGameStateChange defaultMode;
 
@@ -102,6 +109,19 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             if (!permission.startsWith("anvillot.limit."))
                 return;
             this.maxCost = Int.P(permission.substring("anvillot.limit.".length()));
+        });
+
+        L.R(new Listener() {
+            @EventHandler
+            public void onDamage(EntityDamageEvent e) {
+                if (!(e.getEntity() instanceof Player))
+                    return;
+                Player player = (Player) e.getEntity();
+                if (player.getUniqueId().equals(getOwner().getUniqueId())) {
+                    player.closeInventory();
+                    HandlerList.unregisterAll(this);
+                }
+            }
         });
 
         maxCost = maxCost == -1 ? Integer.MAX_VALUE : maxCost;
@@ -218,6 +238,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     }
 
     public void updateRepairCost(int val) {
+
         repairCost = val;
         w.set(val);
 
@@ -234,6 +255,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             }
 
             sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
+
             return;
         }
 
@@ -251,6 +273,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             }
 
             sendSlotUpdate(2, new ItemStackWrapper(o.getItem(0)), j, incrementStateId());
+
             return;
         }
 
@@ -261,13 +284,13 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             errBar.disable();
 
         super.d();
-    }
 
-    private boolean bT = false;
+    }
 
     @Override
     public void a(String s) {
         super.a(s);
+
         if (CraftItemStack.asBukkitCopy(p.getItem(0)).getType().isAir())
             return;
 

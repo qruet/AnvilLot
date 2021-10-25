@@ -48,6 +48,8 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
     private int maxCost;
     private int repairCost;
 
+    private boolean bT = false;
+
     private final PacketPlayOutGameStateChange defaultMode;
 
     public ContainerAnvilLot(PlayerInventory playerinventory, World world, final BlockPosition position, EntityHuman human) {
@@ -197,8 +199,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
             maxCost = Integer.MAX_VALUE;
         }
 
-        defaultMode = new PacketPlayOutGameStateChange(3, 3);
-        owner.playerConnection.sendPacket(defaultMode);
+        defaultMode = new PacketPlayOutGameStateChange(3, 1);
         owner.updateAbilities();
 
         this.repairCost = levelCost;
@@ -255,17 +256,26 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         result = CraftItemStack.asNMSCopy(event.getResult());
         resultInventory.setItem(0, result);
 
-        if (repairCost >= 40) {
-            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, 1);
-            owner.playerConnection.sendPacket(packet);
-        } else {
-            owner.playerConnection.sendPacket(defaultMode);
-        }
+        owner.playerConnection.sendPacket(defaultMode);
 
         IContainerAnvilLot.super.calculate(new ItemStackWrapper(first), new ItemStackWrapper(second), new ItemStackWrapper(result), levelCost);
 
-        PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, result);
-        owner.playerConnection.sendPacket(spack);
+        sendSlotUpdate(2, new ItemStackWrapper(resultInventory.getItem(0)), windowId);
+    }
+
+    @Override
+    public void a(String s) {
+        super.a(s);
+        if (CraftItemStack.asBukkitCopy(repairInventory.getItem(0)).getType() == org.bukkit.Material.AIR)
+            return;
+
+        if (!bT && !s.isEmpty()) {
+            bT = true;
+            updateRepairCost(repairCost + 1);
+        } else if (bT && s.isEmpty()) {
+            bT = false;
+            updateRepairCost(repairCost - 1);
+        }
     }
 
     public void updateRepairCost(int val) {
@@ -274,14 +284,15 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
         if (expBar != null)
             expBar.update();
         if (repairCost == -1 && GeneralPresets.HARD_LIMIT) {
+            PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(3, 3);
+            owner.playerConnection.sendPacket(packet);
+
             if (hlmBar != null) {
                 if (!hlmBar.isEnabled())
                     hlmBar.enable();
             }
 
-            PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
-            owner.playerConnection.sendPacket(spack);
-
+            sendSlotUpdate(2, new ItemStackWrapper(resultInventory.getItem(0)), windowId);
             return;
         }
         if (getOwner().getLevel() < repairCost) {
@@ -297,9 +308,7 @@ public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvil
                     errBar.update();
             }
 
-            PacketPlayOutSetSlot spack = new PacketPlayOutSetSlot(windowId, 2, resultInventory.getItem(0));
-            owner.playerConnection.sendPacket(spack);
-
+            sendSlotUpdate(2, new ItemStackWrapper(resultInventory.getItem(0)), windowId);
             return;
         }
         if (hlmBar != null && hlmBar.isEnabled())
