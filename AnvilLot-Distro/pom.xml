@@ -75,16 +75,6 @@
         </dependency>
         <dependency>
             <groupId>dev.qruet.anvillot</groupId>
-            <artifactId>AnvilLot-v1_16_R1</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.qruet.anvillot</groupId>
-            <artifactId>AnvilLot-v1_16_R2</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.qruet.anvillot</groupId>
             <artifactId>AnvilLot-v1_16_R3</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
