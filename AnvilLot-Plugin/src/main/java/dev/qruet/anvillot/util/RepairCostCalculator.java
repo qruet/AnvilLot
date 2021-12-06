@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import dev.qruet.anvillot.nms.VersionHandlerNMS;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +31,11 @@ public class RepairCostCalculator {
         }
         try {
             asNMSCopy = CraftItemStack.getMethod("asNMSCopy", org.bukkit.inventory.ItemStack.class);
-            getRepairCost = ItemStack.getMethod("getRepairCost");
+            if (VersionHandlerNMS.MINECRAFT_BASE_VERSION > 17) {
+                getRepairCost = ItemStack.getMethod("F");
+            } else {
+                getRepairCost = ItemStack.getMethod("getRepairCost");
+            }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
