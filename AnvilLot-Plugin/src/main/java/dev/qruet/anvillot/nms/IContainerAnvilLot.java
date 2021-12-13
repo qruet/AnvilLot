@@ -92,7 +92,7 @@ public interface IContainerAnvilLot {
 
         Object player = ReflectionUtils.invokeMethod("getHandle", CraftPlayer.cast(getOwner()));
         Object playerConnection = ReflectionUtils.getField(player, "b");
-        ReflectionUtils.invokeMethodWithArgs("sendPacket", playerConnection, packet);
+        ReflectionUtils.invokeMethodWithArgs(VersionHandlerNMS.MINECRAFT_BASE_VERSION > 17 ? "a" : "sendPacket", playerConnection, packet);
     }
 
     /**

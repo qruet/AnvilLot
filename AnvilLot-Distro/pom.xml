@@ -83,6 +83,11 @@
             <artifactId>AnvilLot-v1_17_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>dev.qruet.anvillot</groupId>
+            <artifactId>AnvilLot-v1_18_R1</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

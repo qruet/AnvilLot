@@ -9,6 +9,10 @@
     <version>3.6</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <name>AnvilLot</name>
     <description>Remove the limitations posed by default vanilla anvils and maximize their repair costs to a
         configurable amount!
@@ -22,6 +26,7 @@
         <module>AnvilLot-Distro</module>
         <module>AnvilLot-v1_16_R3</module>
         <module>AnvilLot-v1_17_R1</module>
+        <module>AnvilLot-v1_18_R1</module>
     </modules>
 
     <profiles>
@@ -36,6 +41,7 @@
                 <module>AnvilLot-v1_16_R2</module>
                 <module>AnvilLot-v1_16_R3</module>
                 <module>AnvilLot-v1_17_R1</module>
+                <module>AnvilLot-v1_18_R1</module>
                 <module>AnvilLot-Distro</module>
             </modules>
         </profile>
